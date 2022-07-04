@@ -1,0 +1,47 @@
+[
+    {
+        "display_name": "Super Admin",
+        "route": "/superadmin",
+        "icon": "bx bxs-user-rectangle"
+    },
+    {
+        "display_name": "Companies",
+        "route": "/Companies",
+        "icon": "bx bxs -buildings"
+    },
+    {
+        "display_name": "Tài khoản",
+        "route": "/Users",
+        "icon": "bx bxs-user-account"
+    },
+    {
+        "display_name": "Loại vi phạm",
+        "route": "/ReportTypes",
+        "icon": "bx bxs-user-account"
+    },
+    {
+        "display_name": "Báo cáo vi phạm",
+        "route": "/Reports",
+        "icon": "bx bxs-user-account"
+    },
+    {
+        "display_name": "New Entries",
+        "route": "/NewEntries",
+        "icon": "bx bxs-message-alt-add"
+    },
+    {
+        "display_name": "View Entries",
+        "route": "/ViewEntries",
+        "icon": "bx bxs-file-find"
+    },
+    {
+        "display_name": "Radar Chart",
+        "route": "/RadarChart",
+        "icon": "bx bx-radar"
+    },
+    {
+        "display_name": "ScoreBoard",
+        "route": "/ScoreBoard",
+        "icon": "bx bx-clipboard"
+    }
+]

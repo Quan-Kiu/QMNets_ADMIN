@@ -1,5 +1,5 @@
-import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons'
-import { Button, Col, Form, Input, Layout, Popconfirm, Row, Select, Tag } from 'antd'
+import { DeleteOutlined, EyeOutlined } from '@ant-design/icons'
+import { Button, Col, Form, Layout, message, Popconfirm, Row, Select, Tag } from 'antd'
 import moment from 'moment'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,6 +7,7 @@ import DataTable from '../../components/DataTable2'
 import MainModal from '../../components/MainModal'
 import { toggleModal } from '../../redux/app/action'
 import { deleteReport, getAllReportBasic } from '../../redux/report/action'
+import callAPi from '../../utils/apiRequest'
 import ReportForm from './Form/ReportForm'
 
 const reports = {
@@ -30,7 +31,7 @@ const Report = props => {
         filter: [],
     });
     const dispatch = useDispatch()
-
+    const [reportType, setReportType] = useState([]);
 
 
 
@@ -38,18 +39,26 @@ const Report = props => {
     const columnDefs = useMemo(
         () => [
             {
-                field: 'type',
+                field: 'projectId',
+                sortable: true,
+                headerName: 'Id vi phạm',
+                minWidth: 250,
+                cellRenderer: (params) => params?.data?.post?._id || params?.data?.user?._id || 'Đã xóa'
+
+            },
+            {
+                field: 'reportType',
                 sortable: true,
                 headerName: 'Loại báo cáo',
-                minWidth: 200,
+                minWidth: 100,
                 cellRenderer: (params) => reports[params?.value?.type] || ""
 
             },
             {
-                field: 'type',
+                field: 'reportType',
                 sortable: true,
                 headerName: 'Chủ đề vi phạm',
-                minWidth: 200,
+                minWidth: 100,
                 cellRenderer: (params) => params?.value?.name || ""
             },
             {
@@ -122,6 +131,27 @@ const Report = props => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
+    const fetch = async (type) => {
+        try {
+            const res = await callAPi('admin/reportTypes/getAll', 'post', {
+                page: 1,
+                limit: 999999999999,
+                filter: [{
+                    type: 'type',
+                    name: type,
+                    operator: 'EQUAL'
+                }]
+            })
+
+            if (res.success) {
+                setReportType(res.data.rows);
+            }
+
+        } catch (error) {
+            message.error(error.message)
+        }
+    }
+
 
 
     const onFilter = (page) => {
@@ -173,15 +203,41 @@ const Report = props => {
                                 gap: '1rem',
                             }}
                         >
-                            <Form.Item label="Loại báo cáo" name="type" >
-                                <Select allowClear placeholder="Loại báo cáo" >
+                            <Form.Item label="Loại báo cáo" name="reportType.type" >
+                                <Select allowClear onChange={(v) => {
+                                    fetch(v)
+                                }} placeholder="Loại báo cáo" >
                                     <Select.Option value="C">Nội dung</Select.Option>
                                     <Select.Option value="A">Tài khoản</Select.Option>
                                 </Select>
                             </Form.Item>
                             <Col>
-                                <Form.Item label="Chủ đề vi phạm" name={"name"} >
-                                    <Input placeholder={'Chủ đề vi phạm'} />
+                                <Form.Item label="Chủ đề vi phạm" name={"reportType.name"} >
+                                    <Select allowClear placeholder="Chủ đề vi phạm">
+                                        {
+                                            reportType.map((r) => <Select.Option value={r.name}>{r.name}</Select.Option>)
+                                        }
+
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+
+                            <Col>
+                                <Form.Item label="Trạng thái" name="status" >
+                                    <Select allowClear placeholder="Trạng thái" >
+                                        <Select.Option key={"P"}>
+                                            Đang chờ duyệt
+                                        </Select.Option>
+                                        <Select.Option key={"I"}>
+                                            Đang duyệt
+                                        </Select.Option>
+                                        <Select.Option key={"R"}>
+                                            Đã duyệt
+                                        </Select.Option>
+                                        <Select.Option key={"N"}>
+                                            Không duyệt
+                                        </Select.Option>
+                                    </Select>
                                 </Form.Item>
                             </Col>
 

@@ -4,11 +4,11 @@ import moment from 'moment'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toggleModal } from '../../../redux/app/action'
-import { editReport } from '../../../redux/report/action'
+import { editPost } from '../../../redux/post/action'
 import { FormWrapper } from '../../User/Form/UserForm.style'
 
 
-const ReportForm = props => {
+const PostForm = props => {
     const [form] = Form.useForm()
     const { dataModal } = useSelector(state => state.app);
     const isDisabled = !!dataModal?.result;
@@ -43,15 +43,15 @@ const ReportForm = props => {
         delete values.name;
         delete values.description;
         if (dataModal?._id) {
-            dispatch(editReport({ url: `/${dataModal._id}`, data: values, method: 'patch' }))
+            dispatch(editPost({ url: `/${dataModal._id}`, data: values, method: 'patch' }))
         } else {
 
-            dispatch(editReport({ url: ``, data: values, method: 'post' }))
+            dispatch(editPost({ url: ``, data: values, method: 'post' }))
         }
 
     }
     return (
-        <FormWrapper layout="horizontal" initialValues={{ ...dataModal, ...dataModal?.reportType, }} labelWrap={true} labelCol={{
+        <FormWrapper layout="horizontal" initialValues={{ ...dataModal, ...dataModal?.postType, }} labelWrap={true} labelCol={{
             flex: '140px'
         }} form={form} onFinish={handleOnFinish}>
             <Row gap={[12, 12]}>
@@ -136,7 +136,7 @@ const ReportForm = props => {
             <Row gutter={[12, 12]} justify="end">
                 {!isDisabled && <Col>
                     <Button icon={<EyeOutlined />} size="large" type="primary" >
-                        {dataModal?.reportType?.type === 'C' ? <a style={{
+                        {dataModal?.postType?.type === 'C' ? <a style={{
                             color: 'white'
                         }} href={`${process.env.REACT_APP_CLIENT_SERVER}/posts/${dataModal?.post?._id}`} target="_blank">Xem nội dung vi phạm</a> : <a style={{
                             color: 'white'
@@ -160,6 +160,6 @@ const ReportForm = props => {
     )
 }
 
-ReportForm.propTypes = {}
+PostForm.propTypes = {}
 
-export default ReportForm
+export default PostForm

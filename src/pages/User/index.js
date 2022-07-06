@@ -66,24 +66,33 @@ const User = props => {
                 maxWidth: 300,
             },
             {
-                field: 'phone',
+                field: 'mobile',
                 sortable: true,
                 filter: true,
                 headerName: 'Số điện thoại',
                 suppressMenu: true,
                 floatingFilter: true,
-                minWidth: 200,
-                maxWidth: 300,
+                minWidth: 100,
             },
             {
                 field: 'dob',
                 sortable: true,
-                filter: true,
                 headerName: 'Ngày sinh',
-                suppressMenu: true,
-                floatingFilter: true,
                 minWidth: 100,
-                maxWidth: 300,
+                valueFormatter: (params) => {
+                    if (params?.value) {
+
+                        return moment(params?.value).format('DD-MM-YYYY')
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            {
+                field: 'createdAt',
+                sortable: true,
+                headerName: 'Ngày tham gia',
+                minWidth: 100,
                 valueFormatter: (params) => {
                     if (params?.value) {
 
@@ -201,6 +210,7 @@ const User = props => {
                         <Form
                             form={form}
                             onFinish={onFilter}
+
                             style={{
                                 display: 'flex',
                                 gap: '1rem',
@@ -213,7 +223,7 @@ const User = props => {
                                     <Select.Option value="username">Tên tài khoản</Select.Option>
                                     <Select.Option value="fullname">Họ và tên</Select.Option>
                                     <Select.Option value="email">Email</Select.Option>
-                                    <Select.Option value="phone">Số điện thoại</Select.Option>
+                                    <Select.Option value="mobile">Số điện thoại</Select.Option>
                                 </Select>
                             </Form.Item>
                             <Col>
@@ -221,13 +231,13 @@ const User = props => {
                                     <Input placeholder={'Tìm kiếm'} />
                                 </Form.Item>
                             </Col>
-
                             <Col>
-                                <Form.Item name="deleted" initialValue={"all"}>
+                                <Form.Item name="status" label={"Trạng thái tài khoản"} initialValue={"all"}>
                                     <Select>
                                         <Select.Option value={"all"}>Tất cả</Select.Option>
-                                        <Select.Option value={false}>Chưa xóa</Select.Option>
-                                        <Select.Option value={true}>Đã xóa</Select.Option>
+                                        <Select.Option value={'I'}>Chưa kích hoạt</Select.Option>
+                                        <Select.Option value={'A'}>Đã kích hoạt</Select.Option>
+                                        <Select.Option value={'B'}>Đã Khóa</Select.Option>
                                     </Select>
                                 </Form.Item>
                             </Col>

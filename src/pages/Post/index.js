@@ -6,32 +6,32 @@ import { useDispatch, useSelector } from 'react-redux'
 import DataTable from '../../components/DataTable2'
 import MainModal from '../../components/MainModal'
 import { toggleModal } from '../../redux/app/action'
-import { deleteReport, getAllReportBasic } from '../../redux/report/action'
+import { deletePost, getAllPostBasic } from '../../redux/post/action'
 import callAPi from '../../utils/apiRequest'
-import ReportForm from './Form/ReportForm'
+import PostForm from './Form/PostForm'
 
-const reports = {
+const posts = {
     'A': 'Tài khoản',
     'C': 'Nội dung'
 }
 
-const reportStatus = {
+const postStatus = {
     'P': <Tag color={"#f50"}>Chờ xử lý</Tag>,
     'I': <Tag color={"#2db7f5"}>Đang xử lý</Tag>,
     'R': <Tag color={"#87d068"}>Đã xử lý</Tag>
 }
 
-const Report = props => {
+const Post = props => {
     const gridRef = useRef();
     const [form] = Form.useForm()
-    const { data, loading, success } = useSelector(state => state.report)
+    const { data, loading, success } = useSelector(state => state.post)
     const [filter, setFilter] = useState({
         page: 1,
         limit: 20,
         filter: [],
     });
     const dispatch = useDispatch()
-    const [reportType, setReportType] = useState([]);
+    const [postType, setPostType] = useState([]);
 
 
 
@@ -40,15 +40,15 @@ const Report = props => {
         () => [
 
             {
-                field: 'reportType',
+                field: 'postType',
                 sortable: true,
                 headerName: 'Loại báo cáo',
                 minWidth: 100,
-                cellRenderer: (params) => reports[params?.value?.type] || ""
+                cellRenderer: (params) => posts[params?.value?.type] || ""
 
             },
             {
-                field: 'reportType',
+                field: 'postType',
                 sortable: true,
                 headerName: 'Chủ đề vi phạm',
                 minWidth: 100,
@@ -71,7 +71,7 @@ const Report = props => {
                 field: 'status',
                 headerName: 'Trạng thái',
                 minWidth: 100,
-                cellRenderer: (params) => reportStatus[params?.value]
+                cellRenderer: (params) => postStatus[params?.value]
             },
 
 
@@ -106,7 +106,7 @@ const Report = props => {
                                 placement="leftBottom"
                                 title={'Bạn có chắc chắn muốn xóa?'}
                                 onConfirm={() => {
-                                    dispatch(deleteReport({
+                                    dispatch(deletePost({
                                         url: `/${params.data._id}`,
                                         method: 'delete'
                                     }))
@@ -126,7 +126,7 @@ const Report = props => {
     );
     const fetch = async (type) => {
         try {
-            const res = await callAPi('admin/reportTypes/getAll', 'post', {
+            const res = await callAPi('admin/postTypes/getAll', 'post', {
                 page: 1,
                 limit: 999999999999,
                 filter: [{
@@ -137,7 +137,7 @@ const Report = props => {
             })
 
             if (res.success) {
-                setReportType(res.data.rows);
+                setPostType(res.data.rows);
             }
 
         } catch (error) {
@@ -172,13 +172,13 @@ const Report = props => {
 
     useEffect(() => {
         if (success) {
-            dispatch(getAllReportBasic(filter))
+            dispatch(getAllPostBasic(filter))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [success])
 
     useEffect(() => {
-        dispatch(getAllReportBasic(filter))
+        dispatch(getAllPostBasic(filter))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filter])
     return (
@@ -196,7 +196,7 @@ const Report = props => {
                                 gap: '1rem',
                             }}
                         >
-                            <Form.Item label="Loại báo cáo" name="reportType.type" >
+                            <Form.Item label="Loại báo cáo" name="postType.type" >
                                 <Select allowClear onChange={(v) => {
                                     fetch(v)
                                 }} placeholder="Loại báo cáo" >
@@ -205,10 +205,10 @@ const Report = props => {
                                 </Select>
                             </Form.Item>
                             <Col>
-                                <Form.Item label="Chủ đề vi phạm" name={"reportType.name"} >
+                                <Form.Item label="Chủ đề vi phạm" name={"postType.name"} >
                                     <Select allowClear placeholder="Chủ đề vi phạm">
                                         {
-                                            reportType.map((r) => <Select.Option value={r.name}>{r.name}</Select.Option>)
+                                            postType.map((r) => <Select.Option value={r.name}>{r.name}</Select.Option>)
                                         }
 
                                     </Select>
@@ -254,7 +254,7 @@ const Report = props => {
                         </Button>
                     </Col>
                 </Row>
-                <MainModal loading={loading} form={<ReportForm />} />
+                <MainModal loading={loading} form={<PostForm />} />
                 {/* <ModalUser filter={filter} /> */}
 
                 <DataTable
@@ -269,6 +269,6 @@ const Report = props => {
         </Layout>
     )
 }
-Report.propTypes = {}
+Post.propTypes = {}
 
-export default Report
+export default Post

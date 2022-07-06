@@ -62,7 +62,7 @@ const DataTable = forwardRef((props, ref) => {
                     getRowStyle={(params) => {
                         if (params?.data?.deleted) {
 
-                            return { background: 'red' }
+                            return { background: 'rgba(255, 255, 159,.6)' }
                         } else {
 
                             return { background: 'white' }

@@ -7,12 +7,14 @@ import moment from 'moment';
 import { handleCRUDUser } from '../../../redux/user/saga'
 import { editUser } from '../../../redux/user/action'
 import { toggleModal } from '../../../redux/app/action'
+import { CloseCircleFilled, SaveOutlined } from '@ant-design/icons'
 
 
 const UserForm = props => {
     const [form] = Form.useForm()
     const { dataModal } = useSelector(state => state.app);
     const dispatch = useDispatch();
+    const isDisabled = !!dataModal?.deleted;
 
 
     const handleOnFinish = (values) => {
@@ -36,7 +38,7 @@ const UserForm = props => {
                     <Form.Item label="Email" name="email">
                         <Input></Input>
                     </Form.Item>
-                    <Form.Item label="Số điện thoại" name="phone">
+                    <Form.Item label="Số điện thoại" name="mobile">
                         <Input></Input>
                     </Form.Item>
                     {!dataModal?._id && <Form.Item label="Mật khẩu" name="password">
@@ -69,12 +71,12 @@ const UserForm = props => {
             </Row>
             <Row gutter={[12, 12]} justify="end">
                 <Col>
-                    <Button size="large" htmlType="submit" type="primary">
+                    <Button disabled={isDisabled} icon={<SaveOutlined />} size="large" htmlType="submit" type="primary">
                         Lưu
                     </Button>
                 </Col>
                 <Col>
-                    <Button size="large" type="default" onClick={() => {
+                    <Button size="large" type="default" icon={<CloseCircleFilled />} onClick={() => {
                         dispatch(toggleModal(null))
                     }}>
                         Hủy

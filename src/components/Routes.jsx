@@ -7,6 +7,7 @@ import Customers from '../pages/Customers'
 import User from '../pages/User'
 import ReportType from '../pages/ReportType'
 import Report from '../pages/Report'
+import Post from '../pages/Post'
 
 const Routes = () => {
     return (
@@ -15,6 +16,7 @@ const Routes = () => {
             <Route path='/Users' exact component={User} />
             <Route path='/ReportTypes' exact component={ReportType} />
             <Route path='/Reports' exact component={Report} />
+            <Route path='/Posts' exact component={Post} />
             <Route path='/customers' component={Customers} />
         </Switch>
     )

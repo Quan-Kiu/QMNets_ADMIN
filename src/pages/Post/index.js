@@ -1,19 +1,18 @@
-import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons'
-import { Button, Col, Form, Layout, message, Popconfirm, Row, Select, Tag } from 'antd'
+import { DeleteOutlined, EditOutlined, EyeOutlined, FileSearchOutlined } from '@ant-design/icons'
+import { Button, Col, Form, Input, Layout, message, Popconfirm, Row, Select, Tag } from 'antd'
 import moment from 'moment'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import DataTable from '../../components/DataTable2'
+import DatePickerField from '../../components/DatePicker'
 import MainModal from '../../components/MainModal'
 import { toggleModal } from '../../redux/app/action'
 import { deletePost, getAllPostBasic } from '../../redux/post/action'
 import callAPi from '../../utils/apiRequest'
+import handleFilter from '../../utils/filter_utils'
 import PostForm from './Form/PostForm'
 
-const posts = {
-    'A': 'Tài khoản',
-    'C': 'Nội dung'
-}
+const status = ['', 'Công khai', 'Riêng tư']
 
 const postStatus = {
     'P': <Tag color={"#f50"}>Chờ xử lý</Tag>,
@@ -40,39 +39,55 @@ const Post = props => {
         () => [
 
             {
-                field: 'postType',
+                field: '_id',
                 sortable: true,
-                headerName: 'Loại báo cáo',
-                minWidth: 100,
-                cellRenderer: (params) => posts[params?.value?.type] || ""
+                resizable: true,
+                headerName: 'Id',
+                minWidth: 200,
 
             },
             {
-                field: 'postType',
+                field: 'content',
                 sortable: true,
-                headerName: 'Chủ đề vi phạm',
-                minWidth: 100,
-                cellRenderer: (params) => params?.value?.name || ""
-            },
-            {
-                field: 'description',
-                sortable: true,
-                headerName: 'Thông tin thêm',
-                minWidth: 300,
-            },
-            {
-                field: 'createdAt',
-                sortable: true,
-                headerName: 'Báo cáo lúc',
+                headerName: 'Nội dung',
                 minWidth: 200,
-                cellRenderer: (params) => moment(params?.value).format('DD-MM-YYYY HH:mm') || ""
+                cellRenderer: (params) => params?.value || 'Bài viết hình ảnh, video'
+            },
+            {
+                field: 'likes',
+                sortable: true,
+                headerName: 'Lượt thích',
+                minWidth: 60,
+                cellRenderer: (params) => params?.value?.length || 0
+            },
+            {
+                field: 'comments',
+                sortable: true,
+                headerName: 'Lượt bình luận',
+                minWidth: 60,
+                cellRenderer: (params) => params?.value?.length || 0
+            },
+            {
+                field: 'user',
+                sortable: true,
+                headerName: 'Người đăng',
+                minWidth: 60,
+                cellRenderer: (params) => params?.value?.username || ""
             },
             {
                 field: 'status',
                 headerName: 'Trạng thái',
                 minWidth: 100,
-                cellRenderer: (params) => postStatus[params?.value]
+                cellRenderer: (params) => status[params?.value] || ''
             },
+            {
+                field: 'createdAt',
+                sortable: true,
+                headerName: 'Đăng lúc',
+                minWidth: 100,
+                cellRenderer: (params) => moment(params?.value).format('DD-MM-YYYY HH:mm') || ""
+            },
+
 
 
             {
@@ -94,7 +109,7 @@ const Post = props => {
                                 gap: '1rem',
                             }}
                         >
-                            <EditOutlined
+                            <EyeOutlined
                                 onClick={() => {
                                     dispatch(toggleModal(params.data));
                                 }}
@@ -124,43 +139,12 @@ const Post = props => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
-    const fetch = async (type) => {
-        try {
-            const res = await callAPi('admin/postTypes/getAll', 'post', {
-                page: 1,
-                limit: 999999999999,
-                filter: [{
-                    type: 'type',
-                    name: type,
-                    operator: 'EQUAL'
-                }]
-            })
-
-            if (res.success) {
-                setPostType(res.data.rows);
-            }
-
-        } catch (error) {
-            message.error(error.message)
-        }
-    }
-
 
 
     const onFilter = (page) => {
         const values = form.getFieldsValue();
 
-        const newFilter = Object.keys(values).reduce((prev, v) => {
-            if (values[v] !== undefined && values[v] !== 'all') {
-                return [...prev, {
-
-                    type: v,
-                    name: values[v],
-                    operator: typeof values[v] === 'string' ? 'LIKE' : 'EQUAL'
-                }]
-            }
-            return prev;
-        }, [])
+        const newFilter = handleFilter(values);
 
         setFilter({
             page: typeof page === 'number' ? page : 1,
@@ -182,77 +166,60 @@ const Post = props => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filter])
     return (
-        <Layout>
+        <Layout className='main-layout'>
             <Layout.Content>
-                <Row gutter={10}>
+                <Row gutter={10} className={"search-layout"}>
                     <Col flex={1}>
                         <Form
                             labelWrap={true}
-
+                            layout="horizontal"
+                            labelCol={{
+                                flex: '140px'
+                            }}
+                            labelAlign="left"
                             form={form}
                             onFinish={onFilter}
-                            style={{
-                                display: 'flex',
-                                gap: '1rem',
-                            }}
+
                         >
-                            <Form.Item label="Loại báo cáo" name="postType.type" >
-                                <Select allowClear onChange={(v) => {
-                                    fetch(v)
-                                }} placeholder="Loại báo cáo" >
-                                    <Select.Option value="C">Nội dung</Select.Option>
-                                    <Select.Option value="A">Tài khoản</Select.Option>
-                                </Select>
-                            </Form.Item>
-                            <Col>
-                                <Form.Item label="Chủ đề vi phạm" name={"postType.name"} >
-                                    <Select allowClear placeholder="Chủ đề vi phạm">
-                                        {
-                                            postType.map((r) => <Select.Option value={r.name}>{r.name}</Select.Option>)
-                                        }
+                            <Row gutter={[16, 16]}>
+                                <Col xl={8} md={24} sm={24} xs={24}>
+                                    <Form.Item name="_id" label="Id" >
+                                        <Input ></Input>
+                                    </Form.Item>
+                                    <DatePickerField />
+                                </Col>
+                                <Col xl={8} md={24} sm={24} xs={24}>
+                                    <Form.Item name="username" label="Người đăng" >
+                                        <Input ></Input>
+                                    </Form.Item>
+                                    <Form.Item name="deleted" label={"Đã xóa"} >
+                                        <Select placeholder="Đã xóa " allowClear>
+                                            <Select.Option value={false}>Chưa xóa</Select.Option>
+                                            <Select.Option value={true}>Đã xóa</Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
 
-                                    </Select>
-                                </Form.Item>
-                            </Col>
+                                <Col xl={8} md={24} sm={24} xs={24}
 
-                            <Col>
-                                <Form.Item label="Trạng thái" name="status" >
-                                    <Select allowClear placeholder="Trạng thái" >
-                                        <Select.Option key={"P"}>
-                                            Đang chờ duyệt
-                                        </Select.Option>
-                                        <Select.Option key={"I"}>
-                                            Đang duyệt
-                                        </Select.Option>
-                                        <Select.Option key={"R"}>
-                                            Đã duyệt
-                                        </Select.Option>
-                                        <Select.Option key={"N"}>
-                                            Không duyệt
-                                        </Select.Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-
-                            <Col
-                                style={{
-                                    marginLeft: 'auto',
-                                }}
-                            >
-                                <Button size="large" htmlType="submit" type="primary">
-                                    Tìm kiếm
-                                </Button>
-                            </Col>
+                                >
+                                    <Button style={{
+                                        float: 'right',
+                                    }} icon={<FileSearchOutlined />} htmlType="submit" type="primary">
+                                        Tìm kiếm
+                                    </Button>
+                                </Col>
+                            </Row>
                         </Form>
                     </Col>
 
-                    <Col>
-                        <Button size="large" type="primary" onClick={() => {
+                    {/* <Col>
+                        <Button  type="primary" onClick={() => {
                             dispatch(toggleModal("new"))
                         }}>
                             Thêm mới
                         </Button>
-                    </Col>
+                    </Col> */}
                 </Row>
                 <MainModal loading={loading} form={<PostForm />} />
                 {/* <ModalUser filter={filter} /> */}
@@ -266,7 +233,7 @@ const Post = props => {
                     loading={loading}
                 />
             </Layout.Content>
-        </Layout>
+        </Layout >
     )
 }
 Post.propTypes = {}

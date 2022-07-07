@@ -37,7 +37,7 @@ const SignIn = () => {
               name="email"
               rules={[{ type: "email", required: true, message: 'Vui lòng nhập Email!' }]}
             >
-              <Input size="large" prefix={<i class='bx bx-envelope' ></i>} placeholder="Email" />
+              <Input prefix={<i class='bx bx-envelope' ></i>} placeholder="Email" />
 
             </Form.Item>
             <Form.Item
@@ -45,7 +45,7 @@ const SignIn = () => {
               rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
             >
               <Input.Password
-                size="large"
+
                 prefix={<i class='bx bx-lock-alt' ></i>}
                 type="password"
                 placeholder="Password"
@@ -55,7 +55,7 @@ const SignIn = () => {
               {() => (
                 <Button size="larger"
                   loading={loading}
-                  size="large"
+
                   type="primary"
                   htmlType="submit"
                   disabled={

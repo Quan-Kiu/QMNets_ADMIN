@@ -5,7 +5,7 @@ import { OverlayLoadingWrapper } from './customLoading.style';
 export default (props) => {
   return (
     <OverlayLoadingWrapper>
-      <Spin size="large" />
+      <Spin />
     </OverlayLoadingWrapper>
   )
 }

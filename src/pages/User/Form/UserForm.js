@@ -71,12 +71,12 @@ const UserForm = props => {
             </Row>
             <Row gutter={[12, 12]} justify="end">
                 <Col>
-                    <Button disabled={isDisabled} icon={<SaveOutlined />} size="large" htmlType="submit" type="primary">
+                    <Button disabled={isDisabled} icon={<SaveOutlined />} htmlType="submit" type="primary">
                         Lưu
                     </Button>
                 </Col>
                 <Col>
-                    <Button size="large" type="default" icon={<CloseCircleFilled />} onClick={() => {
+                    <Button type="default" icon={<CloseCircleFilled />} onClick={() => {
                         dispatch(toggleModal(null))
                     }}>
                         Hủy

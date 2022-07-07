@@ -1,5 +1,5 @@
 import { CloseCircleFilled, CloseOutlined, CloseSquareFilled, EyeOutlined, SaveOutlined } from '@ant-design/icons'
-import { Button, Col, Form, Input, Row, Select } from 'antd'
+import { Button, Col, Form, Image, Input, Row, Select } from 'antd'
 import moment from 'moment'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -17,7 +17,7 @@ const PostForm = props => {
         if (dataModal?.result) {
             return <>
                 <Form.Item label="Kết quả" name="result">
-                    <Select disabled size="large" >
+                    <Select disabled  >
                         <Select.Option key={"W"}>
                             Nhắc nhở
                         </Select.Option>
@@ -30,7 +30,7 @@ const PostForm = props => {
                     </Select>
                 </Form.Item>
                 <Form.Item label="Ghi chú" name="resultNote">
-                    <Input.TextArea readOnly size="large" rows={3}></Input.TextArea>
+                    <Input.TextArea readOnly rows={3}></Input.TextArea>
                 </Form.Item>
             </>
         }
@@ -51,78 +51,49 @@ const PostForm = props => {
 
     }
     return (
-        <FormWrapper layout="horizontal" initialValues={{ ...dataModal, ...dataModal?.postType, }} labelWrap={true} labelCol={{
+        <FormWrapper layout="horizontal" initialValues={{ ...dataModal, user: dataModal?.user?.username, }} labelWrap={true} labelCol={{
             flex: '140px'
         }} form={form} onFinish={handleOnFinish}>
             <Row gap={[12, 12]}>
                 <Col xl={12} md={12} sm={24} xs={24}>
-                    <Form.Item label="Loại báo cáo" name="type">
-                        <Select size="large" disabled>
-                            <Select.Option key={"C"}>
-                                Nội dung
-                            </Select.Option>
-                            <Select.Option key={"A"}>
-                                Tài khoản
-                            </Select.Option>
-                        </Select>
+                    <Form.Item label="ID" name="_id">
+                        <Input readOnly></Input>
                     </Form.Item>
-                    <Form.Item label="Thông tin thêm" name="description">
-                        <Input.TextArea size="large" rows={5} readOnly></Input.TextArea>
+                    <Form.Item label="Nội dung" name="content">
+                        <Input.TextArea rows={5} readOnly></Input.TextArea>
                     </Form.Item>
+                    <Form.Item label="Hình ảnh/Video" >
+                        <Row gutter={[12, 12]}>
+
+                            {
+                                dataModal?.media?.map(m => {
+                                    if (m?.url?.match('/image/'))
+                                        return <Col><Image width={100} height={100} style={{
+                                            objectFit: 'cover',
+                                        }} src={m.url} /></Col>
+                                })
+                            }
+                        </Row>
+                    </Form.Item>
+
 
                 </Col >
                 <Col xl={12} md={12} sm={24} xs={24}>
 
-                    <Form.Item label="Chủ đề vi phạm" name="name">
-                        <Input size="large" readOnly={true}></Input>
+                    <Form.Item label="Tài khoản đăng" name="user">
+                        <Input readOnly={true}></Input>
                     </Form.Item>
                     <Form.Item label="Trạng thái" name="status" >
-                        <Select disabled={isDisabled} size="large" onChange={(v) => {
-                            if (v === 'R') {
-                                setResultE(<>
-                                    <Form.Item rules={[
-                                        {
-                                            required: true,
-                                            message: 'Vui lòng chọn kết quả'
-                                        }
-                                    ]} label="Kết quả" name="result">
-                                        <Select placeholder="Kết quả">
-                                            <Select.Option key={"W"}>
-                                                Nhắc nhở
-                                            </Select.Option>
-                                            {dataModal?.post && <Select.Option key={"D"}>
-                                                Cảnh cáo, xóa nội dung
-                                            </Select.Option>}
-                                            <Select.Option key={"B"}>
-                                                Khóa tài khoản
-                                            </Select.Option>
-                                        </Select>
-                                    </Form.Item>
-                                    <Form.Item rules={[
-                                        {
-                                            required: true,
-                                            message: 'Vui thêm ghi chú'
-                                        }
-                                    ]} label="Ghi chú" name="resultNote">
-                                        <Input.TextArea rows={3}></Input.TextArea>
-                                    </Form.Item>
-                                </>)
-                            } else {
-                                setResultE(null)
-                            }
-                        }}>
-                            <Select.Option key={"P"}>
-                                Đang chờ duyệt
+                        <Select
+                            disabled
+                        >
+                            <Select.Option value={1}>
+                                Công khai
                             </Select.Option>
-                            <Select.Option key={"I"}>
-                                Đang duyệt
+                            <Select.Option value={2}>
+                                Riêng tư
                             </Select.Option>
-                            <Select.Option key={"R"}>
-                                Đã duyệt
-                            </Select.Option>
-                            <Select.Option key={"N"}>
-                                Không duyệt
-                            </Select.Option>
+
                         </Select>
                     </Form.Item>
 
@@ -133,26 +104,43 @@ const PostForm = props => {
 
 
             </Row>
+            <Row gutter={[12, 12]}  >
+
+                <Form.Item labelCol={{
+                }}  >
+
+                    <Row gutter={[12, 12]} justify="center">
+                        {
+                            dataModal?.media?.map((v) => {
+                                if (v.url.match('/video/')) {
+                                    return <Col span={8}>
+                                        <video style={{
+                                            width: '100%'
+                                        }} controls><source src={v.url} type="video/mp4" /></video>
+                                    </Col>
+                                }
+                            })
+                        }
+
+
+                    </Row>
+                </Form.Item>
+            </Row>
             <Row gutter={[12, 12]} justify="end">
-                {!isDisabled && <Col>
-                    <Button icon={<EyeOutlined />} size="large" type="primary" >
-                        {dataModal?.postType?.type === 'C' ? <a style={{
-                            color: 'white'
-                        }} href={`${process.env.REACT_APP_CLIENT_SERVER}/posts/${dataModal?.post?._id}`} target="_blank">Xem nội dung vi phạm</a> : <a style={{
-                            color: 'white'
-                        }} href={`${process.env.REACT_APP_CLIENT_SERVER}/${dataModal?.user?.username}`} target="_blank">Xem tài khoản vi phạm</a>}
-                    </Button>
-                </Col>}
                 <Col>
-                    <Button disabled={isDisabled} size="large" icon={<SaveOutlined />} htmlType="submit" type="primary">
-                        Lưu
+                    <Button icon={<EyeOutlined style={{
+                        marginRight: '5px'
+                    }} />} type="primary" >
+                        <a style={{
+                            color: 'white'
+                        }} href={`${process.env.REACT_APP_CLIENT_SERVER}/posts/${dataModal?._id}`} target="_blank">Đi đến bài viết</a>
                     </Button>
                 </Col>
                 <Col>
-                    <Button size="large" icon={<CloseCircleFilled />} type="default" onClick={() => {
+                    <Button icon={<CloseCircleFilled />} type="default" onClick={() => {
                         dispatch(toggleModal(null))
                     }}>
-                        Hủy
+                        Thoát
                     </Button>
                 </Col>
             </Row>

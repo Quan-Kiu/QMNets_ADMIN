@@ -55,12 +55,12 @@ const ReportTypeForm = props => {
             </Row>
             <Row gutter={[12, 12]} justify="end">
                 <Col>
-                    <Button size="large" htmlType="submit" type="primary">
+                    <Button htmlType="submit" type="primary">
                         Lưu
                     </Button>
                 </Col>
                 <Col>
-                    <Button size="large" type="default" onClick={() => {
+                    <Button type="default" onClick={() => {
                         dispatch(toggleModal(null))
                     }}>
                         Hủy

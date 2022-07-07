@@ -17,7 +17,7 @@ const ReportForm = props => {
         if (dataModal?.result) {
             return <>
                 <Form.Item label="Kết quả" name="result">
-                    <Select disabled size="large" >
+                    <Select disabled  >
                         <Select.Option key={"W"}>
                             Nhắc nhở
                         </Select.Option>
@@ -30,7 +30,7 @@ const ReportForm = props => {
                     </Select>
                 </Form.Item>
                 <Form.Item label="Ghi chú" name="resultNote">
-                    <Input.TextArea readOnly size="large" rows={3}></Input.TextArea>
+                    <Input.TextArea readOnly rows={3}></Input.TextArea>
                 </Form.Item>
             </>
         }
@@ -57,7 +57,7 @@ const ReportForm = props => {
             <Row gap={[12, 12]}>
                 <Col xl={12} md={12} sm={24} xs={24}>
                     <Form.Item label="Loại báo cáo" name="type">
-                        <Select size="large" disabled>
+                        <Select disabled>
                             <Select.Option key={"C"}>
                                 Nội dung
                             </Select.Option>
@@ -67,17 +67,17 @@ const ReportForm = props => {
                         </Select>
                     </Form.Item>
                     <Form.Item label="Thông tin thêm" name="description">
-                        <Input.TextArea size="large" rows={5} readOnly></Input.TextArea>
+                        <Input.TextArea rows={5} readOnly></Input.TextArea>
                     </Form.Item>
 
                 </Col >
                 <Col xl={12} md={12} sm={24} xs={24}>
 
                     <Form.Item label="Chủ đề vi phạm" name="name">
-                        <Input size="large" readOnly={true}></Input>
+                        <Input readOnly={true}></Input>
                     </Form.Item>
                     <Form.Item label="Trạng thái" name="status" >
-                        <Select disabled={isDisabled} size="large" onChange={(v) => {
+                        <Select disabled={isDisabled} onChange={(v) => {
                             if (v === 'R') {
                                 setResultE(<>
                                     <Form.Item rules={[
@@ -135,7 +135,7 @@ const ReportForm = props => {
             </Row>
             <Row gutter={[12, 12]} justify="end">
                 {!isDisabled && <Col>
-                    <Button icon={<EyeOutlined />} size="large" type="primary" >
+                    <Button icon={<EyeOutlined />} type="primary" >
                         {dataModal?.reportType?.type === 'C' ? <a style={{
                             color: 'white'
                         }} href={`${process.env.REACT_APP_CLIENT_SERVER}/posts/${dataModal?.post?._id}`} target="_blank">Xem nội dung vi phạm</a> : <a style={{
@@ -144,12 +144,12 @@ const ReportForm = props => {
                     </Button>
                 </Col>}
                 <Col>
-                    <Button disabled={isDisabled} size="large" icon={<SaveOutlined />} htmlType="submit" type="primary">
+                    <Button disabled={isDisabled} icon={<SaveOutlined />} htmlType="submit" type="primary">
                         Lưu
                     </Button>
                 </Col>
                 <Col>
-                    <Button size="large" icon={<CloseCircleFilled />} type="default" onClick={() => {
+                    <Button icon={<CloseCircleFilled />} type="default" onClick={() => {
                         dispatch(toggleModal(null))
                     }}>
                         Hủy

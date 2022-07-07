@@ -15,6 +15,10 @@ export const DataTableWrapper = styled.div`
     padding-left: 3px;
     padding-right: 3px !important;
 }
+
+.ag-root-wrapper{
+    border-radius:5px;
+}
 .ag-theme-alpine .ag-paging-panel {
     border-top: 1px solid;
     border-top-color: #babfc7;

@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, FileSearchOutlined, PlusSquareOutlined } from '@ant-design/icons'
 import { Button, Col, Form, Input, Layout, Popconfirm, Row, Select } from 'antd'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -6,6 +6,7 @@ import DataTable from '../../components/DataTable2'
 import MainModal from '../../components/MainModal'
 import { toggleModal } from '../../redux/app/action'
 import { deleteReportType, getAllReportTypeBasic } from '../../redux/reportType/action'
+import handleFilter from '../../utils/filter_utils'
 import ReportTypeForm from './Form/ReportTypeForm'
 
 const reportTypes = {
@@ -106,17 +107,7 @@ const ReportType = props => {
     const onFilter = (page) => {
         const values = form.getFieldsValue();
 
-        const newFilter = Object.keys(values).reduce((prev, v) => {
-            if (values[v] !== undefined && values[v] !== 'all') {
-                return [...prev, {
-
-                    type: v,
-                    name: values[v],
-                    operator: typeof values[v] === 'string' ? 'LIKE' : 'EQUAL'
-                }]
-            }
-            return prev;
-        }, [])
+        const newFilter = handleFilter(values)
 
         setFilter({
             page: typeof page === 'number' ? page : 1,
@@ -138,52 +129,59 @@ const ReportType = props => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filter])
     return (
-        <Layout>
+        <Layout className='main-layout'>
             <Layout.Content>
-                <Row gutter={10}>
+                <Row gutter={10} className={"search-layout"}>
                     <Col flex={1}>
                         <Form
                             labelWrap={true}
-
+                            layout="horizontal"
+                            labelCol={{
+                                flex: '140px'
+                            }}
+                            labelAlign="left"
                             form={form}
                             onFinish={onFilter}
-                            style={{
-                                display: 'flex',
-                                gap: '1rem',
-                            }}
+
                         >
-                            <Form.Item label="Loại báo cáo" name="type" >
-                                <Select allowClear placeholder="Loại báo cáo" >
-                                    <Select.Option value="C">Nội dung</Select.Option>
-                                    <Select.Option value="A">Tài khoản</Select.Option>
-                                </Select>
-                            </Form.Item>
-                            <Col>
-                                <Form.Item label="Chủ đề vi phạm" name={"name"} >
-                                    <Input placeholder={'Chủ đề vi phạm'} />
-                                </Form.Item>
-                            </Col>
+                            <Row gutter={[16, 16]}>
+                                <Col xl={8} md={24} sm={24} xs={24}>
 
-                            <Col
-                                style={{
-                                    marginLeft: 'auto',
-                                }}
-                            >
-                                <Button size="large" htmlType="submit" type="primary">
-                                    Tìm kiếm
-                                </Button>
-                            </Col>
-                        </Form>
-                    </Col>
+                                    <Form.Item label="Loại báo cáo" name="type" >
+                                        < Select allowClear placeholder="Loại báo cáo" >
+                                            <Select.Option value="C">Nội dung</Select.Option>
+                                            <Select.Option value="A">Tài khoản</Select.Option>
+                                        </Select >
+                                    </Form.Item >
+                                </Col>
+                                <Col xl={8} md={24} sm={24} xs={24}>
+                                    <Form.Item label="Chủ đề vi phạm" name={"name"} >
+                                        <Input placeholder={'Chủ đề vi phạm'} />
+                                    </Form.Item>
+                                </Col>
 
-                    <Col>
-                        <Button size="large" type="primary" onClick={() => {
-                            dispatch(toggleModal("new"))
-                        }}>
-                            Thêm mới
-                        </Button>
-                    </Col>
-                </Row>
+                                <Col
+                                    xl={8} md={24} sm={24} xs={24}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'flex-end',
+                                        gap: '5px',
+                                    }}
+                                >
+                                    <Button icon={<FileSearchOutlined />} htmlType="submit" type="primary">
+                                        Tìm kiếm
+                                    </Button>
+                                    <Button icon={<PlusSquareOutlined />} type="primary" onClick={() => {
+                                        dispatch(toggleModal("new"))
+                                    }}>
+                                        Thêm mới
+                                    </Button>
+                                </Col>
+                            </Row >
+                        </Form >
+                    </Col >
+
+                </Row >
                 <MainModal loading={loading} form={<ReportTypeForm />} />
                 {/* <ModalUser filter={filter} /> */}
 
@@ -195,8 +193,8 @@ const ReportType = props => {
                     ref={gridRef}
                     loading={loading}
                 />
-            </Layout.Content>
-        </Layout>
+            </Layout.Content >
+        </Layout >
     )
 }
 ReportType.propTypes = {}

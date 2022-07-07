@@ -1,13 +1,15 @@
-import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons'
-import { Button, Col, Form, Layout, message, Popconfirm, Row, Select, Tag } from 'antd'
+import { DeleteOutlined, EditOutlined, EyeOutlined, FileSearchOutlined } from '@ant-design/icons'
+import { Button, Col, Form, Input, Layout, message, Popconfirm, Row, Select, Tag } from 'antd'
 import moment from 'moment'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import DataTable from '../../components/DataTable2'
+import DatePickerField from '../../components/DatePicker'
 import MainModal from '../../components/MainModal'
 import { toggleModal } from '../../redux/app/action'
 import { deleteReport, getAllReportBasic } from '../../redux/report/action'
 import callAPi from '../../utils/apiRequest'
+import handleFilter from '../../utils/filter_utils'
 import ReportForm from './Form/ReportForm'
 
 const reports = {
@@ -59,6 +61,13 @@ const Report = props => {
                 sortable: true,
                 headerName: 'Thông tin thêm',
                 minWidth: 300,
+            },
+            {
+                field: 'user',
+                sortable: true,
+                headerName: 'Tài khoản vi phạm',
+                minWidth: 100,
+                cellRenderer: (params) => params?.value?.username || ""
             },
             {
                 field: 'createdAt',
@@ -150,17 +159,7 @@ const Report = props => {
     const onFilter = (page) => {
         const values = form.getFieldsValue();
 
-        const newFilter = Object.keys(values).reduce((prev, v) => {
-            if (values[v] !== undefined && values[v] !== 'all') {
-                return [...prev, {
-
-                    type: v,
-                    name: values[v],
-                    operator: typeof values[v] === 'string' ? 'LIKE' : 'EQUAL'
-                }]
-            }
-            return prev;
-        }, [])
+        const newFilter = handleFilter(values);
 
         setFilter({
             page: typeof page === 'number' ? page : 1,
@@ -182,78 +181,85 @@ const Report = props => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filter])
     return (
-        <Layout>
+        <Layout className="main-layout">
             <Layout.Content>
-                <Row gutter={10}>
+                <Row gutter={10} className={"search-layout"}>
                     <Col flex={1}>
                         <Form
                             labelWrap={true}
-
+                            layout="horizontal"
+                            labelCol={{
+                                flex: '160px'
+                            }}
+                            labelAlign="left"
                             form={form}
                             onFinish={onFilter}
-                            style={{
-                                display: 'flex',
-                                gap: '1rem',
-                            }}
+
                         >
-                            <Form.Item label="Loại báo cáo" name="reportType.type" >
-                                <Select allowClear onChange={(v) => {
-                                    fetch(v)
-                                }} placeholder="Loại báo cáo" >
-                                    <Select.Option value="C">Nội dung</Select.Option>
-                                    <Select.Option value="A">Tài khoản</Select.Option>
-                                </Select>
-                            </Form.Item>
-                            <Col>
-                                <Form.Item label="Chủ đề vi phạm" name={"reportType.name"} >
-                                    <Select allowClear placeholder="Chủ đề vi phạm">
-                                        {
-                                            reportType.map((r) => <Select.Option value={r.name}>{r.name}</Select.Option>)
-                                        }
+                            <Row gutter={[16, 16]}>
+                                <Col xl={8} md={24} sm={24} xs={24}>
+                                    <Form.Item label="Loại báo cáo" name="reportType.type" >
+                                        < Select allowClear onChange={(v) => {
+                                            fetch(v)
+                                        }} placeholder="Loại báo cáo" >
+                                            <Select.Option value="C">Nội dung</Select.Option>
+                                            <Select.Option value="A">Tài khoản</Select.Option>
+                                        </Select >
+                                    </Form.Item >
+                                    <Form.Item label="Trạng thái" name="status" >
+                                        <Select allowClear placeholder="Trạng thái" >
+                                            <Select.Option key={"P"}>
+                                                Đang chờ duyệt
+                                            </Select.Option>
+                                            <Select.Option key={"I"}>
+                                                Đang duyệt
+                                            </Select.Option>
+                                            <Select.Option key={"R"}>
+                                                Đã duyệt
+                                            </Select.Option>
+                                            <Select.Option key={"N"}>
+                                                Không duyệt
+                                            </Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                    <DatePickerField />
+                                </Col >
+                                <Col xl={8} md={24} sm={24} xs={24}>
+                                    <Form.Item label="Chủ đề vi phạm" name={"reportType.name"} >
+                                        <Select allowClear placeholder="Chủ đề vi phạm">
+                                            {
+                                                reportType.map((r) => <Select.Option value={r.name}>{r.name}</Select.Option>)
+                                            }
 
-                                    </Select>
-                                </Form.Item>
-                            </Col>
+                                        </Select>
+                                    </Form.Item>
+                                    <Form.Item label="Tài khoản vi phạm" name={"username"} >
+                                        <Input ></Input>
+                                    </Form.Item>
+                                    <Form.Item name="deleted" label={"Đã xóa"} >
+                                        <Select placeholder="Đã xóa " allowClear>
+                                            <Select.Option value={false}>Chưa xóa</Select.Option>
+                                            <Select.Option value={true}>Đã xóa</Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
 
-                            <Col>
-                                <Form.Item label="Trạng thái" name="status" >
-                                    <Select allowClear placeholder="Trạng thái" >
-                                        <Select.Option key={"P"}>
-                                            Đang chờ duyệt
-                                        </Select.Option>
-                                        <Select.Option key={"I"}>
-                                            Đang duyệt
-                                        </Select.Option>
-                                        <Select.Option key={"R"}>
-                                            Đã duyệt
-                                        </Select.Option>
-                                        <Select.Option key={"N"}>
-                                            Không duyệt
-                                        </Select.Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
 
-                            <Col
-                                style={{
-                                    marginLeft: 'auto',
-                                }}
-                            >
-                                <Button size="large" htmlType="submit" type="primary">
-                                    Tìm kiếm
-                                </Button>
-                            </Col>
-                        </Form>
-                    </Col>
+                                <Col xl={8} md={24} sm={24} xs={24}
 
-                    <Col>
-                        <Button size="large" type="primary" onClick={() => {
-                            dispatch(toggleModal("new"))
-                        }}>
-                            Thêm mới
-                        </Button>
-                    </Col>
-                </Row>
+                                >
+                                    <Button style={{
+                                        float: 'right',
+                                    }} icon={<FileSearchOutlined />} htmlType="submit" type="primary">
+                                        Tìm kiếm
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Form >
+                    </Col >
+
+
+                </Row >
                 <MainModal loading={loading} form={<ReportForm />} />
                 {/* <ModalUser filter={filter} /> */}
 
@@ -265,8 +271,8 @@ const Report = props => {
                     ref={gridRef}
                     loading={loading}
                 />
-            </Layout.Content>
-        </Layout>
+            </Layout.Content >
+        </Layout >
     )
 }
 Report.propTypes = {}

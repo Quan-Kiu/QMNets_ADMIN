@@ -5,11 +5,13 @@ import moment from 'moment'
 import DataTable from '../../components/DataTable2'
 import { deleteUser, getAllUserBasic } from '../../redux/user/action'
 import { statusElement } from '../../utils/element_utils'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, FileSearchOutlined, PlusOutlined, PlusSquareOutlined } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
 import MainModal from '../../components/MainModal'
 import { toggleModal } from '../../redux/app/action'
 import UserForm from './Form/UserForm'
+import handleFilter from '../../utils/filter_utils'
+import DatePickerField from '../../components/DatePicker'
 
 const User = props => {
     const gridRef = useRef();
@@ -169,17 +171,8 @@ const User = props => {
     const onFilter = (page) => {
         const values = form.getFieldsValue();
 
-        const newFilter = Object.keys(values).reduce((prev, v) => {
-            if (values[v] !== undefined && values[v] !== 'all') {
-                return [...prev, {
+        const newFilter = handleFilter(values)
 
-                    type: v,
-                    name: values[v],
-                    operator: typeof values[v] === 'string' ? 'LIKE' : 'EQUAL'
-                }]
-            }
-            return prev;
-        }, [])
 
         setFilter({
             page: typeof page === 'number' ? page : 1,
@@ -203,65 +196,82 @@ const User = props => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filter])
     return (
-        <Layout>
+        <Layout className="main-layout">
             <Layout.Content>
-                <Row gutter={10}>
+                <Row gutter={10} className={"search-layout"}>
                     <Col flex={1}>
                         <Form
+                            labelWrap={true}
+                            layout="horizontal"
+                            labelCol={{
+                                flex: '160px'
+                            }}
+                            labelAlign="left"
                             form={form}
                             onFinish={onFilter}
 
-                            style={{
-                                display: 'flex',
-                                gap: '1rem',
-                            }}
                         >
-                            <Form.Item initialValue={filterType}>
-                                <Select onChange={(value) => {
-                                    setFilterType(value);
-                                }} defaultValue={filterType} >
-                                    <Select.Option value="username">Tên tài khoản</Select.Option>
-                                    <Select.Option value="fullname">Họ và tên</Select.Option>
-                                    <Select.Option value="email">Email</Select.Option>
-                                    <Select.Option value="mobile">Số điện thoại</Select.Option>
-                                </Select>
-                            </Form.Item>
-                            <Col>
-                                <Form.Item name={filterType} normalize={(val) => val?.trimStart()}>
-                                    <Input placeholder={'Tìm kiếm'} />
-                                </Form.Item>
-                            </Col>
-                            <Col>
-                                <Form.Item name="status" label={"Trạng thái tài khoản"} initialValue={"all"}>
-                                    <Select>
-                                        <Select.Option value={"all"}>Tất cả</Select.Option>
-                                        <Select.Option value={'I'}>Chưa kích hoạt</Select.Option>
-                                        <Select.Option value={'A'}>Đã kích hoạt</Select.Option>
-                                        <Select.Option value={'B'}>Đã Khóa</Select.Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
+                            <Row gutter={[16, 16]}>
+                                <Col xl={8} md={24} sm={24} xs={24}>
+                                    <Form.Item initialValue={filterType} label="Loại từ khóa">
+                                        <Select onChange={(value) => {
+                                            setFilterType(value);
+                                        }} defaultValue={filterType} >
+                                            <Select.Option value="username">Tên tài khoản</Select.Option>
+                                            < Select.Option value="fullname" > Họ và tên</Select.Option >
+                                            <Select.Option value="email">Email</Select.Option>
+                                            <Select.Option value="mobile">Số điện thoại</Select.Option>
+                                        </Select >
+                                    </Form.Item >
+                                    <Form.Item label="Từ khóa" name={filterType} normalize={(val) => val?.trimStart()}>
+                                        <Input placeholder={'Tìm kiếm'} />
+                                    </Form.Item>
+                                    <DatePickerField />
 
-                            <Col
-                                style={{
-                                    marginLeft: 'auto',
-                                }}
-                            >
-                                <Button size="large" htmlType="submit" type="primary">
-                                    Tìm kiếm
-                                </Button>
-                            </Col>
-                        </Form>
-                    </Col>
 
-                    <Col>
-                        <Button size="large" type="primary" onClick={() => {
-                            dispatch(toggleModal("new"))
-                        }}>
-                            Thêm mới
-                        </Button>
-                    </Col>
-                </Row>
+                                </Col>
+                                <Col xl={8} md={24} sm={24} xs={24}>
+                                    <Form.Item name="status" label={"Trạng thái tài khoản"} >
+                                        <Select placeholder="Trạng thái tài khoản" allowClear>
+                                            <Select.Option value={'I'}>Chưa kích hoạt</Select.Option>
+                                            <Select.Option value={'A'}>Đã kích hoạt</Select.Option>
+                                            <Select.Option value={'B'}>Đã Khóa</Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                    <Form.Item name="deleted" label={"Đã xóa"} >
+                                        <Select placeholder="Đã xóa " allowClear>
+                                            <Select.Option value={false}>Chưa xóa</Select.Option>
+                                            <Select.Option value={true}>Đã xóa</Select.Option>
+                                        </Select>
+                                    </Form.Item>
+
+
+                                </Col>
+
+
+                                <Col
+                                    xl={8} md={24} sm={24} xs={24}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'flex-end',
+                                        gap: '5px',
+                                    }}
+                                >
+                                    <Button icon={<FileSearchOutlined />} htmlType="submit" type="primary">
+                                        Tìm kiếm
+                                    </Button>
+                                    <Button icon={<PlusSquareOutlined />} type="primary" onClick={() => {
+                                        dispatch(toggleModal("new"))
+                                    }}>
+                                        Thêm mới
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Form >
+                    </Col >
+
+
+                </Row >
                 <MainModal loading={loading} form={<UserForm />} />
                 {/* <ModalUser filter={filter} /> */}
 
@@ -272,8 +282,8 @@ const User = props => {
                     ref={gridRef}
                     loading={loading}
                 />
-            </Layout.Content>
-        </Layout>
+            </Layout.Content >
+        </Layout >
     )
 }
 User.propTypes = {}

@@ -2,44 +2,60 @@ import React from 'react'
 
 import './topnav.css'
 
-import { Link } from 'react-router-dom'
 
 import Dropdown from '../dropdown/Dropdown'
 
 import ThemeMenu from '../thememenu/ThemeMenu'
 
 
-import user_image from '../../assets/images/tuat.png'
-
-import user_menu from '../../assets/JsonData/user_menus.json'
-
-const curr_user = {
-    display_name: 'Doğukan Taha ',
-    image: user_image
-}
+import { useDispatch, useSelector } from 'react-redux'
+import { logout } from '../../redux/auth/action'
 
 
-const renderUserToggle = (user) => (
-    <div className="topnav__right-user">
-        <div className="topnav__right-user__image">
-            <img src={user.image} alt="" />
-        </div>
-        <div className="topnav__right-user__name">
-            {user.display_name}
-        </div>
-    </div>
-)
 
-const renderUserMenu = (item, index) => (
-    <Link to='/' key={index}>
-        <div className="notification-item">
-            <i className={item.icon}></i>
-            <span>{item.content}</span>
-        </div>
-    </Link>
-)
+
 
 const Topnav = () => {
+    const { user } = useSelector(state => state.auth)
+
+    const renderUserToggle = (user) => (
+        <div className="topnav__right-user">
+            <div className="topnav__right-user__image">
+                <img src={user.avatar.url} alt="" />
+            </div>
+            <div className="topnav__right-user__name">
+                {user.username}
+            </div>
+        </div>
+    )
+    const dispatch = useDispatch()
+
+    const renderUserMenu = (item, index) => (
+        <a href={item.path} onClick={(e) => {
+            if (!item.path) {
+                dispatch(logout())
+            }
+        }} target="_blank" key={index}>
+            <div className="notification-item">
+                <i className={item.icon}></i>
+                <span>{item.content}</span>
+            </div>
+        </a>
+    )
+
+    const user_menu = [
+        {
+            icon: "bx bx-user",
+            content: "Trang cá nhân",
+            path: process.env.REACT_APP_CLIENT_SERVER + '/' + user.username
+
+        },
+        {
+            icon: "bx bx-log-out-circle bx-rotate-180",
+            content: "Đăng xuất",
+            path: null
+        }
+    ]
     return (
         <div className='topnav'>
             <div className="topnav__search">
@@ -50,7 +66,7 @@ const Topnav = () => {
                 <div className="topnav__right-item">
                     {/* dropdown here */}
                     <Dropdown
-                        customToggle={() => renderUserToggle(curr_user)}
+                        customToggle={() => renderUserToggle(user)}
                         contentData={user_menu}
                         renderItems={(item, index) => renderUserMenu(item, index)}
                     />

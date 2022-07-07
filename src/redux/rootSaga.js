@@ -4,6 +4,7 @@ import userSaga from './user/saga'
 import reportTypeSaga from './reportType/saga'
 import reportSaga from './report/saga'
 import postSaga from './post/saga'
+import commentSaga from './comment/saga'
 
 function* rootSaga() {
     yield all([
@@ -12,6 +13,7 @@ function* rootSaga() {
         fork(reportTypeSaga),
         fork(reportSaga),
         fork(postSaga),
+        fork(commentSaga),
     ])
 }
 

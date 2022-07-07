@@ -44,8 +44,7 @@ const User = props => {
                 filter: true,
                 suppressMenu: true,
                 floatingFilter: true,
-                minWidth: 200,
-                maxWidth: 300,
+                minWidth: 150,
             },
             {
                 field: 'fullname',
@@ -54,8 +53,7 @@ const User = props => {
                 headerName: 'Họ và tên',
                 suppressMenu: true,
                 floatingFilter: true,
-                minWidth: 200,
-                maxWidth: 300,
+                minWidth: 150,
             },
             {
                 field: 'email',
@@ -64,8 +62,7 @@ const User = props => {
                 headerName: 'Email',
                 suppressMenu: true,
                 floatingFilter: true,
-                minWidth: 200,
-                maxWidth: 300,
+                minWidth: 150,
             },
             {
                 field: 'mobile',
@@ -74,7 +71,7 @@ const User = props => {
                 headerName: 'Số điện thoại',
                 suppressMenu: true,
                 floatingFilter: true,
-                minWidth: 100,
+                minWidth: 150,
             },
             {
                 field: 'dob',

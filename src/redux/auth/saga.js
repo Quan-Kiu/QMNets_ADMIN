@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { all, call, fork, put, takeEvery } from "redux-saga/effects";
 import { authEndPoint, GET, POST } from "../../constants";
 import callAPi from "../../utils/apiRequest";
@@ -9,13 +10,18 @@ function* handleLogin() {
     yield takeEvery(LOGIN_START, function* (action) {
         try {
             const res = yield call(callAPi, authEndPoint.LOGIN, POST, action.payload);
-            if (res && res.success) {
+            if (res && res.success && res.data.user.isAdmin) {
                 yield fork(setItem, 'token', res.data.accessToken);
                 yield put(loginSuccess(res.data));
+
+            } else {
+                yield put(authFailed());
+                message.error('Chức năng chỉ dành cho Admin');
 
             }
         } catch (error) {
             yield put(authFailed());
+            message.error(error.message);
 
         }
     })
@@ -28,11 +34,18 @@ function* handleRefreshToken() {
     yield takeEvery(REFRESH_TOKEN, function* () {
         try {
             const res = yield call(callAPi, authEndPoint.REFRESH_TOKEN, GET);
-            if (res && res?.success) {
+            if (res && res.success && res.data.user.isAdmin) {
                 yield fork(setItem, 'token', res.data.accessToken);
                 yield put(loginSuccess(res.data));
+
+            } else {
+                yield put(authFailed());
+                message.error('Chức năng chỉ dành cho Admin');
+
             }
         } catch (error) {
+            yield put(authFailed());
+            message.error(error.message);
         }
     })
 }

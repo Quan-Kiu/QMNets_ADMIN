@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 import './sidebar.css'
 
@@ -28,10 +28,15 @@ const Sidebar = props => {
     const app = useSelector(state => state.app)
     const activeItem = sidebar_items.findIndex(item => item.route === props.location.pathname)
 
+
+
     return (
         <div className='sidebar'>
             <div className="sidebar__logo">
-                <img src={`${process.env.REACT_APP_CLIENT_SERVER}/assets/images/${app?.mode === 'theme-mode-dark' ? 'logo-dark.png' : 'logo.png'}`} alt="company logo" />
+                <img style={{
+                    width: '150px',
+                    objectFit: 'contain'
+                }} src={`${process.env.REACT_APP_CLIENT_SERVER}/assets/images/${app?.mode === 'theme-mode-dark' ? 'logo-dark.png' : 'logo.png'}`} alt="company logo" />
             </div>
             {
                 sidebar_items.map((item, index) => (

@@ -6,7 +6,7 @@ import Sidebar from '../sidebar/Sidebar'
 import TopNav from '../topnav/TopNav'
 import Routes from '../Routes'
 
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, Route, Switch, useHistory } from 'react-router-dom'
 
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -32,6 +32,8 @@ const Layout = () => {
         dispatch(refreshToken())
     }, [dispatch])
 
+
+
     return (
         <BrowserRouter>
             <Route render={(props) => isLogin ? (
@@ -47,7 +49,7 @@ const Layout = () => {
             ) : <div className={`layout ${app.mode} ${app.color}`}>
 
                 <Switch>
-                    <Route path='/' exact component={SignIn} />
+                    <Route path='/' component={SignIn} />
                 </Switch>
             </div>} />
         </BrowserRouter>

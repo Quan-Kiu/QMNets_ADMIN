@@ -9,7 +9,7 @@ import ReportType from '../pages/ReportType'
 import Report from '../pages/Report'
 import Post from '../pages/Post'
 import Comment from '../pages/Comment'
-import { useSelector } from 'react-redux'
+import PostStyle from '../pages/PostStyle'
 
 const Routes = () => {
 
@@ -21,6 +21,7 @@ const Routes = () => {
             <Route path='/Reports' exact component={Report} />
             <Route path='/Posts' exact component={Post} />
             <Route path='/Comments' exact component={Comment} />
+            <Route path='/PostStyles' exact component={PostStyle} />
             <Route path='/customers' component={Customers} />
         </Switch>
     )

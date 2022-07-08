@@ -42,6 +42,14 @@ const Report = props => {
         () => [
 
             {
+                field: '_id',
+                sortable: true,
+                resizable: true,
+                headerName: 'ID',
+                minWidth: 100,
+
+            },
+            {
                 field: 'reportType',
                 sortable: true,
                 headerName: 'Loại báo cáo',
@@ -198,6 +206,9 @@ const Report = props => {
                         >
                             <Row gutter={[16, 16]}>
                                 <Col xl={8} md={24} sm={24} xs={24}>
+                                    <Form.Item label="ID" name={"_id"} >
+                                        <Input ></Input>
+                                    </Form.Item>
                                     <Form.Item label="Loại báo cáo" name="reportType.type" >
                                         < Select allowClear onChange={(v) => {
                                             fetch(v)

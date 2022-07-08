@@ -3,6 +3,7 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import { AgGridReact } from 'ag-grid-react';
 import { Pagination } from 'antd';
 import React, { forwardRef, useEffect, useMemo } from 'react';
+import { copyToClipboard } from '../../utils/word_utils';
 import customLoading from './customLoading';
 import { DataTableWrapper } from './DataTable.style';
 
@@ -59,6 +60,10 @@ const DataTable = forwardRef((props, ref) => {
                     defaultColDef={defaultColDef}
                     columnDefs={colDef}
                     rowData={data?.rows}
+                    onCellDoubleClicked={(v) => {
+                        copyToClipboard(v?.value)
+
+                    }}
                     getRowStyle={(params) => {
                         if (params?.data?.deleted) {
 

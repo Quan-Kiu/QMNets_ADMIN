@@ -54,7 +54,7 @@ const ReportForm = props => {
         <FormWrapper layout="horizontal" initialValues={{ ...dataModal, ...dataModal?.reportType, }} labelWrap={true} labelCol={{
             flex: '140px'
         }} form={form} onFinish={handleOnFinish}>
-            <Row gap={[12, 12]}>
+            <Row gutter={[12, 12]}>
                 <Col xl={12} md={12} sm={24} xs={24}>
                     <Form.Item label="Loại báo cáo" name="type">
                         <Select disabled>

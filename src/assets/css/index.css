@@ -123,6 +123,11 @@ input:focus {
     color: #000;
 }
 
+.main-modal .ant-image {
+    border: thin solid rgba(0, 0, 0, 0.2);
+
+}
+
 .dark-background {
     background-color: var(--main-bg-dark);
     color: #fff;

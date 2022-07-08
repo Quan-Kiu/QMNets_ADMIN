@@ -54,7 +54,7 @@ const PostForm = props => {
         <FormWrapper layout="horizontal" initialValues={{ ...dataModal, user: dataModal?.user?.username, }} labelWrap={true} labelCol={{
             flex: '140px'
         }} form={form} onFinish={handleOnFinish}>
-            <Row gap={[12, 12]}>
+            <Row gutter={[12, 12]}>
                 <Col xl={12} md={12} sm={24} xs={24}>
                     <Form.Item label="ID" name="_id">
                         <Input readOnly></Input>
@@ -62,17 +62,24 @@ const PostForm = props => {
                     <Form.Item label="Nội dung" name="content">
                         <Input.TextArea rows={5} readOnly></Input.TextArea>
                     </Form.Item>
-                    <Form.Item label="Hình ảnh/Video" >
-                        <Row gutter={[12, 12]}>
+                    <Form.Item label="Video" style={{
+                        width: '100%',
+                    }}   >
 
+                        <Row gutter={[12, 12]} >
                             {
-                                dataModal?.media?.map(m => {
-                                    if (m?.url?.match('/image/'))
-                                        return <Col><Image width={100} height={100} style={{
-                                            objectFit: 'cover',
-                                        }} src={m.url} /></Col>
+                                dataModal?.media?.map((v) => {
+                                    if (v.url.match('/video/')) {
+                                        return <Col span={12}>
+                                            <video style={{
+                                                width: '100%'
+                                            }} controls><source src={v.url} type="video/mp4" /></video>
+                                        </Col>
+                                    }
                                 })
                             }
+
+
                         </Row>
                     </Form.Item>
 
@@ -97,7 +104,21 @@ const PostForm = props => {
                         </Select>
                     </Form.Item>
 
-                    {resultE}
+
+                    <Form.Item label="Hình ảnh" >
+                        <Row gutter={[12, 12]}>
+
+                            {
+                                dataModal?.media?.map(m => {
+                                    if (m?.url?.match('/image/'))
+                                        return <Col><Image width={100} height={100} style={{
+                                            objectFit: 'cover',
+                                        }} src={m.url} /></Col>
+                                })
+                            }
+                        </Row>
+                    </Form.Item>
+
 
 
                 </Col >
@@ -106,25 +127,7 @@ const PostForm = props => {
             </Row>
             <Row gutter={[12, 12]}  >
 
-                <Form.Item labelCol={{
-                }}  >
 
-                    <Row gutter={[12, 12]} justify="center">
-                        {
-                            dataModal?.media?.map((v) => {
-                                if (v.url.match('/video/')) {
-                                    return <Col span={8}>
-                                        <video style={{
-                                            width: '100%'
-                                        }} controls><source src={v.url} type="video/mp4" /></video>
-                                    </Col>
-                                }
-                            })
-                        }
-
-
-                    </Row>
-                </Form.Item>
             </Row>
             <Row gutter={[12, 12]} justify="end">
                 <Col>

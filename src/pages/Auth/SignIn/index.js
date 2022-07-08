@@ -29,7 +29,7 @@ const SignIn = () => {
           <div style={{
             marginBottom: '2rem'
           }} className="title">
-            Admin Manager
+            Quản trị QMNets
           </div>
 
           <Form form={form} onFinish={handleOnFinishForm} name="horizontal_login" layout="horizontal" >

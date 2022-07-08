@@ -12,6 +12,7 @@ const MainModal = ({ loading, form }) => {
     }
     return (
         <Modal
+            className="main-modal"
             title={typeof dataModal === 'string' ? 'Thêm' : 'Sửa'}
             onCancel={handleOnCancel}
             visible={dataModal}

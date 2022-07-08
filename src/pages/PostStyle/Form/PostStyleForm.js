@@ -2,11 +2,11 @@ import { Button, Col, Form, Input, Row, Select } from 'antd'
 import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
 import { toggleModal } from '../../../redux/app/action'
-import { editReportType } from '../../../redux/reportType/action'
+import { editPostStyle } from '../../../redux/postStyle/action'
 import { FormWrapper } from '../../User/Form/UserForm.style'
 
 
-const ReportTypeForm = props => {
+const PostStyleForm = props => {
     const [form] = Form.useForm()
     const { dataModal } = useSelector(state => state.app);
     const dispatch = useDispatch();
@@ -14,10 +14,10 @@ const ReportTypeForm = props => {
 
     const handleOnFinish = (values) => {
         if (dataModal?._id) {
-            dispatch(editReportType({ url: `/${dataModal._id}`, data: values, method: 'patch' }))
+            dispatch(editPostStyle({ url: `/${dataModal._id}`, data: values, method: 'patch' }))
         } else {
 
-            dispatch(editReportType({ url: ``, data: values, method: 'post' }))
+            dispatch(editPostStyle({ url: ``, data: values, method: 'post' }))
         }
 
     }
@@ -26,31 +26,39 @@ const ReportTypeForm = props => {
             flex: '140px'
         }} form={form} onFinish={handleOnFinish}>
             <Row gutter={[12, 12]}>
-                <Col xl={24} md={24} sm={24} xs={24}>
+                <Col xl={12} md={12} sm={12} xs={24}>
                     <Form.Item rules={[
                         {
                             required: true,
                             message: 'Vui lòng nhập loại báo cáo'
                         }
-                    ]} label="Loại báo cáo" name="type">
-                        <Select>
-                            <Select.Option key={"C"}>
-                                Nội dung
-                            </Select.Option>
-                            <Select.Option key={"A"}>
-                                Tài khoản
-                            </Select.Option>
-                        </Select>
+                    ]} label="Màu Nền" name="background">
+                        <input style={{
+                            width: '100%',
+                            height: '100px',
+                        }} type="color"
+                        >
+                        </input>
                     </Form.Item>
+
+                </Col >
+                <Col xl={12} md={12} sm={12} xs={24}>
                     <Form.Item rules={[
                         {
                             required: true,
                             message: 'Vui lòng nhập Chủ đề vi phạm'
                         }
-                    ]} label="Chủ đề vi phạm" name="name">
-                        <Input></Input>
+                    ]} label="Màu chữ" name="color">
+                        <input style={{
+                            width: '100%',
+                            height: '100px',
+
+                        }} type="color"
+                        >
+                        </input>
                     </Form.Item>
-                </Col >
+
+                </Col>
 
             </Row>
             <Row gutter={[12, 12]} justify="end">
@@ -71,6 +79,6 @@ const ReportTypeForm = props => {
     )
 }
 
-ReportTypeForm.propTypes = {}
+PostStyleForm.propTypes = {}
 
-export default ReportTypeForm
+export default PostStyleForm

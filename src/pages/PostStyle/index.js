@@ -1,93 +1,68 @@
-import { DeleteOutlined, EditOutlined, EyeOutlined, FileSearchOutlined } from '@ant-design/icons'
-import { Button, Col, Form, Input, Layout, message, Popconfirm, Row, Select, Tag } from 'antd'
-import moment from 'moment'
+import { DeleteOutlined, EditOutlined, FileSearchOutlined, PlusSquareOutlined } from '@ant-design/icons'
+import { Button, Col, Form, Input, Layout, Popconfirm, Row, Select } from 'antd'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import DataTable from '../../components/DataTable2'
-import DatePickerField from '../../components/DatePicker'
 import MainModal from '../../components/MainModal'
 import { toggleModal } from '../../redux/app/action'
-import { deletePost, getAllPostBasic } from '../../redux/post/action'
-import callAPi from '../../utils/apiRequest'
+import { deletePostStyle, getAllPostStyleBasic } from '../../redux/postStyle/action'
 import handleFilter from '../../utils/filter_utils'
-import PostForm from './Form/PostForm'
+import PostStyleForm from './Form/PostStyleForm'
 
-const status = ['', 'Công khai', 'Riêng tư']
-
-const postStatus = {
-    'P': <Tag color={"#f50"}>Chờ xử lý</Tag>,
-    'I': <Tag color={"#2db7f5"}>Đang xử lý</Tag>,
-    'R': <Tag color={"#87d068"}>Đã xử lý</Tag>
+const postStyles = {
+    'A': 'Tài khoản',
+    'C': 'Nội dung'
 }
 
-const Post = props => {
+const PostStyle = props => {
     const gridRef = useRef();
     const [form] = Form.useForm()
-    const { data, loading, success } = useSelector(state => state.post)
+    const { data, loading, success } = useSelector(state => state.postStyle)
     const [filter, setFilter] = useState({
         page: 1,
         limit: 20,
         filter: [],
     });
     const dispatch = useDispatch()
-    const [postType, setPostType] = useState([]);
+
 
 
 
 
     const columnDefs = useMemo(
         () => [
-
             {
                 field: '_id',
-                sortable: true,
                 resizable: true,
                 headerName: 'ID',
-                minWidth: 200,
+                minWidth: 100,
+
 
             },
             {
-                field: 'content',
-                sortable: true,
-                headerName: 'Nội dung',
-                minWidth: 200,
-                cellRenderer: (params) => params?.value || 'Bài viết hình ảnh, video'
-            },
-            {
-                field: 'likes',
-                sortable: true,
-                headerName: 'Lượt thích',
-                minWidth: 60,
-                cellRenderer: (params) => params?.value?.length || 0
-            },
-            {
-                field: 'comments',
-                sortable: true,
-                headerName: 'Lượt bình luận',
-                minWidth: 60,
-                cellRenderer: (params) => params?.value?.length || 0
-            },
-            {
-                field: 'user',
-                sortable: true,
-                headerName: 'Người đăng',
-                minWidth: 60,
-                cellRenderer: (params) => params?.value?.username || ""
-            },
-            {
-                field: 'status',
-                headerName: 'Trạng thái',
-                minWidth: 100,
-                cellRenderer: (params) => status[params?.value] || ''
-            },
-            {
-                field: 'createdAt',
-                sortable: true,
-                headerName: 'Đăng lúc',
-                minWidth: 100,
-                cellRenderer: (params) => moment(params?.value).format('DD-MM-YYYY HH:mm') || ""
-            },
+                field: 'background',
+                headerName: 'Màu nền',
+                minWidth: 300,
+                cellRenderer: (params) => <div style={{
+                    border: '1px solid rgba(0,0,0,0.2)',
+                    width: '100%',
+                    height: '100%',
+                    background: params.value
+                }}></div>
 
+            },
+            {
+                field: 'color',
+                headerName: 'Màu chữ',
+                minWidth: 300,
+                cellRenderer: (params) => <div style={{
+                    border: '1px solid rgba(0,0,0,0.2)',
+
+                    width: '100%',
+                    height: '100%',
+                    background: params.value
+                }}></div >
+            },
 
 
             {
@@ -109,7 +84,7 @@ const Post = props => {
                                 gap: '1rem',
                             }}
                         >
-                            <EyeOutlined
+                            <EditOutlined
                                 onClick={() => {
                                     dispatch(toggleModal(params.data));
                                 }}
@@ -121,7 +96,7 @@ const Post = props => {
                                 placement="leftBottom"
                                 title={'Bạn có chắc chắn muốn xóa?'}
                                 onConfirm={() => {
-                                    dispatch(deletePost({
+                                    dispatch(deletePostStyle({
                                         url: `/${params.data._id}`,
                                         method: 'delete'
                                     }))
@@ -144,7 +119,7 @@ const Post = props => {
     const onFilter = (page) => {
         const values = form.getFieldsValue();
 
-        const newFilter = handleFilter(values);
+        const newFilter = handleFilter(values)
 
         setFilter({
             page: typeof page === 'number' ? page : 1,
@@ -156,13 +131,13 @@ const Post = props => {
 
     useEffect(() => {
         if (success) {
-            dispatch(getAllPostBasic(filter))
+            dispatch(getAllPostStyleBasic(filter))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [success])
 
     useEffect(() => {
-        dispatch(getAllPostBasic(filter))
+        dispatch(getAllPostStyleBasic(filter))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filter])
     return (
@@ -183,14 +158,18 @@ const Post = props => {
                         >
                             <Row gutter={[16, 16]}>
                                 <Col xl={8} md={24} sm={24} xs={24}>
-                                    <Form.Item name="_id" label="ID" >
-                                        <Input ></Input>
+
+                                    <Form.Item label="ID" name={"_id"} >
+                                        <Input placeholder={'Id'} />
                                     </Form.Item>
-                                    <DatePickerField />
+                                    <Form.Item label="Màu nền" name={"background"} >
+                                        <Input placeholder={'Mã màu nền'} />
+                                    </Form.Item>
+
                                 </Col>
                                 <Col xl={8} md={24} sm={24} xs={24}>
-                                    <Form.Item name="username" label="Người đăng" >
-                                        <Input ></Input>
+                                    <Form.Item label="Màu chữ" name={"color"} >
+                                        <Input placeholder={'Mã màu chữ'} />
                                     </Form.Item>
                                     <Form.Item name="deleted" label={"Đã xóa"} >
                                         <Select placeholder="Đã xóa " allowClear>
@@ -200,28 +179,29 @@ const Post = props => {
                                     </Form.Item>
                                 </Col>
 
-                                <Col xl={8} md={24} sm={24} xs={24}
-
+                                <Col
+                                    xl={8} md={24} sm={24} xs={24}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'flex-end',
+                                        gap: '5px',
+                                    }}
                                 >
-                                    <Button style={{
-                                        float: 'right',
-                                    }} icon={<FileSearchOutlined />} htmlType="submit" type="primary">
+                                    <Button icon={<FileSearchOutlined />} htmlType="submit" type="primary">
                                         Tìm kiếm
                                     </Button>
+                                    <Button icon={<PlusSquareOutlined />} type="primary" onClick={() => {
+                                        dispatch(toggleModal("new"))
+                                    }}>
+                                        Thêm mới
+                                    </Button>
                                 </Col>
-                            </Row>
-                        </Form>
-                    </Col>
+                            </Row >
+                        </Form >
+                    </Col >
 
-                    {/* <Col>
-                        <Button  type="primary" onClick={() => {
-                            dispatch(toggleModal("new"))
-                        }}>
-                            Thêm mới
-                        </Button>
-                    </Col> */}
-                </Row>
-                <MainModal loading={loading} form={<PostForm />} />
+                </Row >
+                <MainModal loading={loading} form={<PostStyleForm />} />
                 {/* <ModalUser filter={filter} /> */}
 
                 <DataTable
@@ -232,10 +212,10 @@ const Post = props => {
                     ref={gridRef}
                     loading={loading}
                 />
-            </Layout.Content>
+            </Layout.Content >
         </Layout >
     )
 }
-Post.propTypes = {}
+PostStyle.propTypes = {}
 
-export default Post
+export default PostStyle

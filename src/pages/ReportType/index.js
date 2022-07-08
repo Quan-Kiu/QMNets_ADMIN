@@ -32,11 +32,16 @@ const ReportType = props => {
     const columnDefs = useMemo(
         () => [
             {
+                field: '_id',
+                sortable: true,
+                resizable: true,
+                headerName: 'ID',
+                minWidth: 100,
+
+            },
+            {
                 field: 'type',
                 sortable: true,
-                filter: true,
-                suppressMenu: true,
-                floatingFilter: true,
                 headerName: 'Loại báo cáo',
                 minWidth: 200,
                 cellRenderer: (params) => reportTypes[params?.value] || ""
@@ -45,10 +50,7 @@ const ReportType = props => {
             {
                 field: 'name',
                 sortable: true,
-                filter: true,
                 headerName: 'Chủ đề vi phạm',
-                suppressMenu: true,
-                floatingFilter: true,
                 minWidth: 200,
             },
 
@@ -147,16 +149,27 @@ const ReportType = props => {
                             <Row gutter={[16, 16]}>
                                 <Col xl={8} md={24} sm={24} xs={24}>
 
+                                    <Form.Item label="ID" name={"_id"} >
+                                        <Input ></Input>
+                                    </Form.Item>
+
                                     <Form.Item label="Loại báo cáo" name="type" >
                                         < Select allowClear placeholder="Loại báo cáo" >
                                             <Select.Option value="C">Nội dung</Select.Option>
                                             <Select.Option value="A">Tài khoản</Select.Option>
                                         </Select >
                                     </Form.Item >
+
                                 </Col>
                                 <Col xl={8} md={24} sm={24} xs={24}>
                                     <Form.Item label="Chủ đề vi phạm" name={"name"} >
                                         <Input placeholder={'Chủ đề vi phạm'} />
+                                    </Form.Item>
+                                    <Form.Item name="deleted" label={"Đã xóa"} >
+                                        <Select placeholder="Đã xóa " allowClear>
+                                            <Select.Option value={false}>Chưa xóa</Select.Option>
+                                            <Select.Option value={true}>Đã xóa</Select.Option>
+                                        </Select>
                                     </Form.Item>
                                 </Col>
 

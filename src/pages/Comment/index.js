@@ -12,13 +12,6 @@ import callAPi from '../../utils/apiRequest'
 import handleFilter from '../../utils/filter_utils'
 import CommentForm from './Form/CommentForm'
 
-const status = ['', 'Công khai', 'Riêng tư']
-
-const commentStatus = {
-    'P': <Tag color={"#f50"}>Chờ xử lý</Tag>,
-    'I': <Tag color={"#2db7f5"}>Đang xử lý</Tag>,
-    'R': <Tag color={"#87d068"}>Đã xử lý</Tag>
-}
 
 const Comment = props => {
     const gridRef = useRef();
@@ -30,7 +23,6 @@ const Comment = props => {
         filter: [],
     });
     const dispatch = useDispatch()
-    const [commentType, setCommentType] = useState([]);
 
 
 
@@ -42,7 +34,7 @@ const Comment = props => {
                 field: '_id',
                 sortable: true,
                 resizable: true,
-                headerName: 'Id',
+                headerName: 'ID',
                 minWidth: 200,
 
             },
@@ -173,7 +165,7 @@ const Comment = props => {
                         >
                             <Row gutter={[16, 16]}>
                                 <Col xl={8} md={24} sm={24} xs={24}>
-                                    <Form.Item name="_id" label="Id" >
+                                    <Form.Item name="_id" label="ID" >
                                         <Input ></Input>
                                     </Form.Item>
                                     <Form.Item name="postId" label="Id Bài viết" >

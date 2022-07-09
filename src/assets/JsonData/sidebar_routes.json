@@ -20,6 +20,11 @@
         "icon": "bx bxs-report"
     },
     {
+        "display_name": "Thông báo",
+        "route": "/Notifies",
+        "icon": "bx bxs-bell"
+    },
+    {
         "display_name": "Loại vi phạm",
         "route": "/ReportTypes",
         "icon": "bx bx-folder"

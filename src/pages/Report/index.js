@@ -99,6 +99,7 @@ const Report = props => {
                 cellStyle: {
                     display: 'flex',
                     alignItems: 'center',
+                    justifyContent: 'center',
                 },
                 minWidth: 80,
                 maxWidth: 80,
@@ -120,6 +121,7 @@ const Report = props => {
                                 }}
                             />
                             <Popconfirm
+                                disabled={params.data.deleted}
                                 placement="leftBottom"
                                 title={'Bạn có chắc chắn muốn xóa?'}
                                 onConfirm={() => {

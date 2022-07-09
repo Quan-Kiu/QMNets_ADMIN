@@ -1,5 +1,5 @@
-import { DeleteOutlined, EditOutlined, EyeOutlined, FileSearchOutlined } from '@ant-design/icons'
-import { Button, Col, Form, Input, Layout, message, Popconfirm, Row, Select, Tag } from 'antd'
+import { DeleteOutlined, EditOutlined, EyeOutlined, FileSearchOutlined, PlusSquareOutlined } from '@ant-design/icons'
+import { Button, Col, Form, Input, Layout, Popconfirm, Row, Select } from 'antd'
 import moment from 'moment'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,88 +7,83 @@ import DataTable from '../../components/DataTable2'
 import DatePickerField from '../../components/DatePicker'
 import MainModal from '../../components/MainModal'
 import { toggleModal } from '../../redux/app/action'
-import { deletePost, getAllPostBasic } from '../../redux/post/action'
-import callAPi from '../../utils/apiRequest'
+import { deleteNotify, getAllNotifyBasic } from '../../redux/notify/action'
 import handleFilter from '../../utils/filter_utils'
-import PostForm from './Form/PostForm'
+import NotifyForm from './Form/NotifyForm'
 
-const status = ['', 'Công khai', 'Riêng tư']
-
-const postStatus = {
-    'P': <Tag color={"#f50"}>Chờ xử lý</Tag>,
-    'I': <Tag color={"#2db7f5"}>Đang xử lý</Tag>,
-    'R': <Tag color={"#87d068"}>Đã xử lý</Tag>
+const notifys = {
+    1: 'Theo dõi người dùng',
+    2: 'Thích bài viết',
+    3: 'Bình luận bài viết',
+    4: 'Thích bình luận bài viết',
+    5: 'Trả lời bình luận',
+    6: 'Thông báo vi phạm',
 }
 
-const Post = props => {
+const Notify = props => {
     const gridRef = useRef();
     const [form] = Form.useForm()
-    const { data, loading, success } = useSelector(state => state.post)
+    const { data, loading, success } = useSelector(state => state.notify)
     const [filter, setFilter] = useState({
         page: 1,
         limit: 20,
         filter: [],
     });
     const dispatch = useDispatch()
-    const [postType, setPostType] = useState([]);
-
-
-
 
     const columnDefs = useMemo(
         () => [
-
             {
                 field: '_id',
                 sortable: true,
                 resizable: true,
                 headerName: 'ID',
-                minWidth: 200,
+                minWidth: 100,
 
             },
             {
-                field: 'content',
+                field: 'text',
                 sortable: true,
                 headerName: 'Nội dung',
-                minWidth: 200,
-                cellRenderer: (params) => params?.value || 'Bài viết hình ảnh, video'
+                minWidth: 400,
+
+                cellRenderer: (params) => params?.data?.user ? (params?.data?.user?.username + ' ' + params.value) : params.value
+
             },
             {
-                field: 'likes',
+                field: 'recipients',
                 sortable: true,
-                headerName: 'Lượt thích',
-                minWidth: 60,
-                cellRenderer: (params) => params?.value?.length || 0
-            },
-            {
-                field: 'comments',
-                sortable: true,
-                headerName: 'Lượt bình luận',
-                minWidth: 60,
-                cellRenderer: (params) => params?.value?.length || 0
+                headerName: 'ID Nhận',
+                minWidth: 100,
+                valueFormatter: (params) => params?.value?.toString(',') || '',
+                cellRenderer: (params) => params?.value?.toString() || ''
+
             },
             {
                 field: 'user',
                 sortable: true,
-                headerName: 'Người đăng',
-                minWidth: 60,
-                cellRenderer: (params) => params?.value?.username || ""
-            },
-            {
-                field: 'status',
-                headerName: 'Trạng thái',
+                headerName: 'ID gửi',
                 minWidth: 100,
-                cellRenderer: (params) => status[params?.value] || ''
+                cellRenderer: (params) => params?.data?.action === 6 ? 'Hệ thống' : params?.value?._id
+
+            },
+
+            {
+                field: 'action',
+                sortable: true,
+                headerName: 'Loại thông báo',
+                minWidth: 100,
+                cellRenderer: (params) => notifys[params?.value] || ""
+
             },
             {
                 field: 'createdAt',
                 sortable: true,
-                headerName: 'Đăng lúc',
+                headerName: 'Ngày tạo',
                 minWidth: 100,
                 cellRenderer: (params) => moment(params?.value).format('DD-MM-YYYY HH:mm') || ""
+
             },
-
-
 
             {
                 field: 'action',
@@ -97,7 +92,7 @@ const Post = props => {
                 cellStyle: {
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: "center"
+                    justifyContent: 'center',
                 },
                 minWidth: 80,
                 maxWidth: 80,
@@ -108,7 +103,6 @@ const Post = props => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '1rem',
-                                justifyContent: 'center',
                             }}
                         >
                             <EyeOutlined
@@ -120,11 +114,11 @@ const Post = props => {
                                 }}
                             />
                             <Popconfirm
-                                disabled={params.data.deleted}
                                 placement="leftBottom"
+                                disabled={params.data.deleted}
                                 title={'Bạn có chắc chắn muốn xóa?'}
                                 onConfirm={() => {
-                                    dispatch(deletePost({
+                                    dispatch(deleteNotify({
                                         url: `/${params.data._id}`,
                                         method: 'delete'
                                     }))
@@ -143,11 +137,10 @@ const Post = props => {
         []
     );
 
-
     const onFilter = (page) => {
         const values = form.getFieldsValue();
 
-        const newFilter = handleFilter(values);
+        const newFilter = handleFilter(values, 'EQUAL')
 
         setFilter({
             page: typeof page === 'number' ? page : 1,
@@ -159,13 +152,13 @@ const Post = props => {
 
     useEffect(() => {
         if (success) {
-            dispatch(getAllPostBasic(filter))
+            dispatch(getAllNotifyBasic(filter))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [success])
 
     useEffect(() => {
-        dispatch(getAllPostBasic(filter))
+        dispatch(getAllNotifyBasic(filter))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filter])
     return (
@@ -186,45 +179,48 @@ const Post = props => {
                         >
                             <Row gutter={[16, 16]}>
                                 <Col xl={8} md={24} sm={24} xs={24}>
-                                    <Form.Item name="_id" label="ID" >
+
+                                    <Form.Item label="ID" name={"_id"} >
                                         <Input ></Input>
                                     </Form.Item>
+                                    <Form.Item label="ID gửi" name={"user"} >
+                                        <Input ></Input>
+                                    </Form.Item>
+
                                     <DatePickerField />
+
+
                                 </Col>
                                 <Col xl={8} md={24} sm={24} xs={24}>
-                                    <Form.Item name="username" label="Người đăng" >
+                                    <Form.Item label="ID nhận" name={"user"} >
                                         <Input ></Input>
                                     </Form.Item>
-                                    <Form.Item name="deleted" label={"Đã xóa"} >
-                                        <Select placeholder="Đã xóa " allowClear>
-                                            <Select.Option value={false}>Chưa xóa</Select.Option>
-                                            <Select.Option value={true}>Đã xóa</Select.Option>
+                                    <Form.Item name="action" label={"Loại thông báo"} >
+                                        <Select placeholder="Loại thông báo " allowClear>
+                                            {Object.keys(notifys).map((n) => <Select.Option value={n}>{notifys[n]}</Select.Option>)}
                                         </Select>
                                     </Form.Item>
                                 </Col>
 
-                                <Col xl={8} md={24} sm={24} xs={24}
-
+                                <Col
+                                    xl={8} md={24} sm={24} xs={24}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'flex-end',
+                                        gap: '5px',
+                                    }}
                                 >
-                                    <Button style={{
-                                        float: 'right',
-                                    }} icon={<FileSearchOutlined />} htmlType="submit" type="primary">
+                                    <Button icon={<FileSearchOutlined />} htmlType="submit" type="primary">
                                         Tìm kiếm
                                     </Button>
-                                </Col>
-                            </Row>
-                        </Form>
-                    </Col>
 
-                    {/* <Col>
-                        <Button  type="primary" onClick={() => {
-                            dispatch(toggleModal("new"))
-                        }}>
-                            Thêm mới
-                        </Button>
-                    </Col> */}
-                </Row>
-                <MainModal loading={loading} form={<PostForm />} />
+                                </Col>
+                            </Row >
+                        </Form >
+                    </Col >
+
+                </Row >
+                <MainModal loading={loading} form={<NotifyForm />} />
                 {/* <ModalUser filter={filter} /> */}
 
                 <DataTable
@@ -235,10 +231,10 @@ const Post = props => {
                     ref={gridRef}
                     loading={loading}
                 />
-            </Layout.Content>
+            </Layout.Content >
         </Layout >
     )
 }
-Post.propTypes = {}
+Notify.propTypes = {}
 
-export default Post
+export default Notify

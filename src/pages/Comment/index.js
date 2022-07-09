@@ -77,6 +77,7 @@ const Comment = props => {
                 headerName: 'Hành động',
                 pinned: 'right',
                 cellStyle: {
+                    justifyContent: 'center',
                     display: 'flex',
                     alignItems: 'center',
                 },
@@ -100,6 +101,7 @@ const Comment = props => {
                                 }}
                             />
                             <Popconfirm
+                                disabled={params.data.deleted}
                                 placement="leftBottom"
                                 title={'Bạn có chắc chắn muốn xóa?'}
                                 onConfirm={() => {

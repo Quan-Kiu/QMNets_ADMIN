@@ -131,6 +131,7 @@ const User = props => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '1rem',
+                                justifyContent: 'center',
                             }}
                         >
                             <EditOutlined
@@ -142,6 +143,7 @@ const User = props => {
                                 }}
                             />
                             <Popconfirm
+                                disabled={params.data.deleted}
                                 placement="leftBottom"
                                 title={'Bạn có chắc chắn muốn xóa?'}
                                 onConfirm={() => {

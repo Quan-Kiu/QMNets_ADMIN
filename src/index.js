@@ -15,10 +15,6 @@ import './assets/css/theme.css';
 import Layout from './components/layout/Layout';
 
 
-document.title = 'QMNets - Admin Manager'
-
-
-
 ReactDOM.render(
   <Provider store={store}>
 

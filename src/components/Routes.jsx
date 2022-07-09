@@ -10,6 +10,7 @@ import Report from '../pages/Report'
 import Post from '../pages/Post'
 import Comment from '../pages/Comment'
 import PostStyle from '../pages/PostStyle'
+import Notify from '../pages/Notify'
 
 const Routes = () => {
 
@@ -22,6 +23,7 @@ const Routes = () => {
             <Route path='/Posts' exact component={Post} />
             <Route path='/Comments' exact component={Comment} />
             <Route path='/PostStyles' exact component={PostStyle} />
+            <Route path='/Notifies' exact component={Notify} />
             <Route path='/customers' component={Customers} />
         </Switch>
     )

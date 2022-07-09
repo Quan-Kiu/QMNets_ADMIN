@@ -6,6 +6,7 @@ import reportSaga from './report/saga'
 import postSaga from './post/saga'
 import commentSaga from './comment/saga'
 import postStyleSaga from './postStyle/saga'
+import notifySaga from './notify/saga'
 
 function* rootSaga() {
     yield all([
@@ -16,6 +17,7 @@ function* rootSaga() {
         fork(postSaga),
         fork(commentSaga),
         fork(postStyleSaga),
+        fork(notifySaga),
     ])
 }
 

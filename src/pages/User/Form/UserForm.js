@@ -32,26 +32,81 @@ const UserForm = props => {
         }} form={form} onFinish={handleOnFinish}>
             <Row gutter={[12, 12]}>
                 <Col xl={12} md={12} sm={24} xs={24}>
-                    <Form.Item label="Tên tài khoản" name="username">
+                    <Form.Item
+                        rules={[{
+                            required: true,
+                            message: 'Vui lòng nhập tên tài khoản'
+                        },
+                        {
+                            min: 6,
+                            message: 'Vui lòng nhập ít nhất 6 kí tự'
+                        },
+                        {
+                            max: 15,
+                            message: 'Vui lòng nhập ít hơn 15 kí tự'
+                        },
+                        ]}
+                        label="Tên tài khoản" name="username">
                         <Input></Input>
                     </Form.Item>
-                    <Form.Item label="Email" name="email">
+                    <Form.Item rules={[{
+                        required: true,
+                        email: true,
+                        message: 'Vui lòng nhập email'
+                    },
+
+                    ]} label="Email" name="email">
                         <Input></Input>
                     </Form.Item>
                     <Form.Item label="Số điện thoại" name="mobile">
                         <Input></Input>
                     </Form.Item>
-                    {!dataModal?._id && <Form.Item label="Mật khẩu" name="password">
+                    {!dataModal?._id && <Form.Item rules={[{
+                        required: true,
+                        message: 'Vui lòng nhập mật khẩu'
+                    },
+                    {
+                        min: 6,
+                        message: 'Vui lòng nhập ít nhất 6 kí tự'
+                    },
+                    {
+                        max: 30,
+                        message: 'Vui lòng nhập ít hơn 30 kí tự'
+                    },
+                    ]} label="Mật khẩu" name="password">
                         <Input.Password></Input.Password>
                     </Form.Item>}
 
                 </Col >
                 <Col xl={12} md={12} sm={24} xs={24}>
-                    <Form.Item label="Họ tên" name="fullname">
+                    <Form.Item label="Họ tên" name="fullname" rules={[{
+                        required: true,
+                        message: 'Vui lòng nhập họ tên'
+                    },
+                    {
+                        min: 6,
+                        message: 'Vui lòng nhập ít nhất 6 kí tự'
+                    },
+                    {
+                        max: 39,
+                        message: 'Vui lòng nhập ít hơn 30 kí tự'
+                    },
+                    ]}>
                         <Input></Input>
                     </Form.Item>
                     <Form.Item label="Ngày sinh" name="dob">
                         <DatePicker></DatePicker>
+                    </Form.Item>
+                    <Form.Item label="Quyền" name="isAdmin" >
+                        <Select defaultValue={false}>
+                            <Select.Option key={false} value={false}>
+                                Thành viên thường
+                            </Select.Option>
+                            <Select.Option key={true} value={true}>
+                                Quản trị viên
+                            </Select.Option>
+
+                        </Select>
                     </Form.Item>
                     <Form.Item label="Trạng thái" name="status">
                         <Select>

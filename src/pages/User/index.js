@@ -237,6 +237,12 @@ const User = props => {
                                             <Select.Option value={'B'}>Đã Khóa</Select.Option>
                                         </Select>
                                     </Form.Item>
+                                    <Form.Item name="isAdmin" label={"Quyền"} >
+                                        <Select placeholder="Quyền" allowClear>
+                                            <Select.Option value={false}>Thành viên thường</Select.Option>
+                                            <Select.Option value={true}>Quản trị viên</Select.Option>
+                                        </Select>
+                                    </Form.Item>
                                     <Form.Item name="deleted" label={"Đã xóa"} >
                                         <Select placeholder="Đã xóa " allowClear>
                                             <Select.Option value={false}>Chưa xóa</Select.Option>

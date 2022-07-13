@@ -30,7 +30,7 @@ const PostStyleForm = props => {
                     <Form.Item rules={[
                         {
                             required: true,
-                            message: 'Vui lòng nhập loại báo cáo'
+                            message: 'Vui lòng nhập màu nền bài viết.'
                         }
                     ]} label="Màu Nền" name="background">
                         <input style={{
@@ -46,7 +46,7 @@ const PostStyleForm = props => {
                     <Form.Item rules={[
                         {
                             required: true,
-                            message: 'Vui lòng nhập Chủ đề vi phạm'
+                            message: 'Vui lòng nhập màu chữ bài viết.'
                         }
                     ]} label="Màu chữ" name="color">
                         <input style={{

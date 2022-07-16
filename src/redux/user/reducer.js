@@ -31,17 +31,20 @@ const userReducer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 success: false,
+                loading: true,
             };
 
         case EDIT_USER:
             return {
                 ...state,
                 success: false,
+                loading: true,
             };
         case DELETE_USER:
             return {
                 ...state,
                 success: false,
+                loading: true,
             };
         case SUCCESS: {
             return {

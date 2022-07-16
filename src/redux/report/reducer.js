@@ -30,17 +30,20 @@ const reportReducer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 success: false,
+                loading: true,
             };
 
         case EDIT_REPORT:
             return {
                 ...state,
                 success: false,
+                loading: true,
             };
         case DELETE_REPORT:
             return {
                 ...state,
                 success: false,
+                loading: true,
             };
         case SUCCESS: {
             return {

@@ -11,6 +11,7 @@ import { FormWrapper } from '../../User/Form/UserForm.style'
 const ReportForm = props => {
     const [form] = Form.useForm()
     const { dataModal } = useSelector(state => state.app);
+    const { loading } = useSelector(state => state.report);
     const isDisabled = !!dataModal?.result;
     const dispatch = useDispatch();
     const [resultE, setResultE] = useState(() => {
@@ -144,7 +145,7 @@ const ReportForm = props => {
                     </Button>
                 </Col>}
                 <Col>
-                    <Button disabled={isDisabled} icon={<SaveOutlined />} htmlType="submit" type="primary">
+                    <Button loading={loading} disabled={isDisabled} icon={<SaveOutlined />} htmlType="submit" type="primary">
                         Lưu
                     </Button>
                 </Col>

@@ -13,6 +13,7 @@ import { CloseCircleFilled, SaveOutlined } from '@ant-design/icons'
 const UserForm = props => {
     const [form] = Form.useForm()
     const { dataModal } = useSelector(state => state.app);
+    const { loading } = useSelector(state => state.user);
     const dispatch = useDispatch();
     const isDisabled = !!dataModal?.deleted;
 
@@ -126,7 +127,7 @@ const UserForm = props => {
             </Row>
             <Row gutter={[12, 12]} justify="end">
                 <Col>
-                    <Button disabled={isDisabled} icon={<SaveOutlined />} htmlType="submit" type="primary">
+                    <Button loading={loading} disabled={isDisabled} icon={<SaveOutlined />} htmlType="submit" type="primary">
                         Lưu
                     </Button>
                 </Col>

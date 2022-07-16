@@ -8,6 +8,10 @@
     min-height: 100vh;
 }
 
+.ant-picker-date-panel {
+    width: 100%;
+}
+
 .layout__content-main {
     padding: 5px 20px;
 }

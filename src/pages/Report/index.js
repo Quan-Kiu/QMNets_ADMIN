@@ -20,7 +20,8 @@ const reports = {
 const reportStatus = {
     'P': <Tag color={"#f50"}>Chờ xử lý</Tag>,
     'I': <Tag color={"#2db7f5"}>Đang xử lý</Tag>,
-    'R': <Tag color={"#87d068"}>Đã xử lý</Tag>
+    'R': <Tag color={"#87d068"}>Đã duyệt</Tag>,
+    'N': <Tag color={"rgba(0,0,0,0.5)"}>Không duyệt</Tag>
 }
 
 const Report = props => {
@@ -47,6 +48,9 @@ const Report = props => {
                 resizable: true,
                 headerName: 'ID',
                 minWidth: 100,
+                rowGrouped: true,
+                hide: true,
+                keyCreator: params => params.value
 
             },
             {
@@ -280,6 +284,7 @@ const Report = props => {
                     onPageChange={onFilter}
                     data={data}
                     colDef={columnDefs}
+                    groupDisplayType={'groupRows'}
                     paginate={true}
                     ref={gridRef}
                     loading={loading}

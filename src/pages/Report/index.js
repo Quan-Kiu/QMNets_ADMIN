@@ -48,9 +48,7 @@ const Report = props => {
                 resizable: true,
                 headerName: 'ID',
                 minWidth: 100,
-                rowGrouped: true,
-                hide: true,
-                keyCreator: params => params.value
+
 
             },
             {
@@ -284,7 +282,6 @@ const Report = props => {
                     onPageChange={onFilter}
                     data={data}
                     colDef={columnDefs}
-                    groupDisplayType={'groupRows'}
                     paginate={true}
                     ref={gridRef}
                     loading={loading}
